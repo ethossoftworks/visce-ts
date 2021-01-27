@@ -5,32 +5,17 @@
  * build step that gets mapped to the build/generated folder which webpack then bundles.
  */
 
-const projectName = "app"
+const projectName = "BlocReact"
 
 const webpack = require("webpack")
 const path = require("path")
 const fs = require("fs")
 const CopyWebpackPlugin = require("copy-webpack-plugin")
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 
 const prodConfig = {
     mode: "production",
     target: "web",
-    entry: {
-        main: { import: "./build/generated/index.js", dependOn: "libs" },
-        libs: [
-            "react",
-            "react-dom",
-            "react-transition-group",
-            "lodash.isequal",
-            "rxjs",
-            "rxjs/operators",
-            "@ethossoftworks/outcome",
-            "@ethossoftworks/bloc",
-            "@ethossoftworks/bloc-react",
-        ],
-    },
+    entry: "./build/generated/index.js",
     resolve: {
         extensions: [".tsx", ".ts", ".js", ".jsx"],
         alias: {
@@ -39,12 +24,46 @@ const prodConfig = {
             service: path.resolve(__dirname, "build/generated/service"),
             state: path.resolve(__dirname, "build/generated/state"),
             ui: path.resolve(__dirname, "build/generated/ui"),
-            static: path.resolve(__dirname, "static"),
         },
     },
     output: {
-        filename: `${projectName}.[name].js`,
+        filename: `${projectName}.js`,
         path: path.resolve(__dirname, "build/dist"),
+        library: projectName,
+        libraryTarget: "umd",
+        globalObject: "this",
+    },
+    externals: {
+        "@ethossoftworks/bloc": {
+            amd: "@ethossoftworks/bloc",
+            commonjs: "@ethossoftworks/bloc",
+            commonjs2: "@ethossoftworks/bloc",
+            root: "Bloc",
+        },
+        "lodash.isequal": {
+            amd: "rxjs",
+            commonjs: "rxjs",
+            commonjs2: "rxjs",
+            root: "lodash.isequal",
+        },
+        rxjs: {
+            amd: "rxjs",
+            commonjs: "rxjs",
+            commonjs2: "rxjs",
+            root: "rxjs",
+        },
+        "rxjs/operators": {
+            amd: "rxjs/operators",
+            commonjs: "rxjs/operators",
+            commonjs2: "rxjs/operators",
+            root: ["rxjs", "operators"],
+        },
+        react: {
+            amd: "react",
+            commonjs: "react",
+            commonjs2: "react",
+            root: "react",
+        },
     },
     module: {
         rules: [
@@ -58,10 +77,6 @@ const prodConfig = {
                     },
                 },
             },
-            {
-                test: /\.s?css$/,
-                use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
-            },
         ],
     },
     plugins: [
@@ -74,12 +89,16 @@ const prodConfig = {
                 })
             },
         },
-        new MiniCssExtractPlugin(),
         new webpack.WatchIgnorePlugin({
             paths: [path.resolve(__dirname, "src"), path.resolve(__dirname, "node_modules")],
         }),
         new CopyWebpackPlugin({
-            patterns: [{ from: "./static", to: "./", filter: (path) => !/\.s?css$/.test(path) }],
+            patterns: [
+                { from: path.resolve(__dirname, "build/generated/types"), to: "./types" },
+                { from: path.resolve(__dirname, "package.json"), to: "./" },
+                { from: path.resolve(__dirname, "README.md"), to: "./" },
+                { from: path.resolve(__dirname, "LICENSE"), to: "./" },
+            ],
         }),
     ],
     devtool: "source-map",
@@ -91,10 +110,6 @@ const prodConfig = {
             index: "index.html",
         },
     },
-    optimization: {
-        minimize: true,
-        minimizer: [new CssMinimizerPlugin()],
-    },
 }
 
 const devConfig = {
@@ -105,13 +120,14 @@ const devConfig = {
 const testConfig = {
     ...prodConfig,
     ...{
-        entry: `./build/generated/index.test.ts`,
+        entry: `./build/generated/index.test.js`,
         mode: "development",
         target: "node",
         output: {
             filename: `${projectName}.test.js`,
             path: path.resolve(__dirname, "build/dist"),
         },
+        externals: {},
         optimization: {},
     },
 }

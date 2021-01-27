@@ -2,8 +2,7 @@ import isEqual from "lodash.isequal"
 import { useLayoutEffect, useMemo } from "react"
 import { useState } from "react"
 import { distinctUntilChanged, map, skip } from "rxjs/operators"
-import { Bloc, BlocStateType } from "../bloc"
-import { BlocViewModel } from "../BlocViewModel"
+import { Bloc, BlocStateType, BlocViewModel } from "@ethossoftworks/bloc"
 
 /**
  * Subscribes to a Bloc and returns its state. The view will be updated when the bloc is updated.

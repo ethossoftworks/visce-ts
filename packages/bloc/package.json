@@ -13,7 +13,7 @@
     "repository": {
         "url": ""
     },
-    "main": "Bloc.core.js",
+    "main": "Bloc.js",
     "types": "types/index.d.ts",
     "files": [
         "types/",
@@ -22,22 +22,21 @@
         "!*.test.d.ts"
     ],
     "dependencies": {
-        "@ethossoftworks/job": "^1.0.1",
+        "@ethossoftworks/job": "^1.0.2",
         "@ethossoftworks/outcome": "^2.1.0",
         "lodash.isequal": "^4.5.0",
         "rxjs": "^6.6.3"
     },
     "devDependencies": {
-        "@types/lodash.isequal": "^4.5.5",
         "@ethossoftworks/knock-on-wood": "^2.0.0",
+        "@types/lodash.isequal": "^4.5.5",
         "@types/react": "^16.8.24",
-        "react": "^17.0.1",
         "copy-webpack-plugin": "^7.0.0",
         "prettier": "^2.1.2",
+        "source-map-loader": "^2.0.0",
         "typescript": "^4.1.2",
         "webpack": "^5.16.0",
-        "webpack-cli": "^4.2.0",
-        "source-map-loader": "^2.0.0"
+        "webpack-cli": "^4.2.0"
     },
     "scripts": {
         "format": "npx prettier --write --loglevel warn src/**/*.ts*",

@@ -35,6 +35,7 @@ import { Job, JobFunc, SupervisorJob } from "@ethossoftworks/job"
  * [persistStateOnDispose] If false, the internal state will be reset to [initialState] when the bloc is
  * disposed. If true, the bloc's state will persist until the bloc is garbage collected.
  */
+
 export abstract class Bloc<T> {
     private readonly _effects: Map<string, CancellableEffect<any>> = new Map()
     private readonly _state: BehaviorSubject<T>
