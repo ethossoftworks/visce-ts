@@ -18,18 +18,7 @@ const prodConfig = {
     mode: "production",
     target: "web",
     entry: {
-        main: { import: "./build/generated/index.js", dependOn: "libs" },
-        libs: [
-            "react",
-            "react-dom",
-            "react-transition-group",
-            "lodash.isequal",
-            "rxjs",
-            "rxjs/operators",
-            "@ethossoftworks/outcome",
-            "@ethossoftworks/bloc",
-            "@ethossoftworks/bloc-react",
-        ],
+        main: { import: "./build/generated/index.js" },
     },
     resolve: {
         extensions: [".tsx", ".ts", ".js", ".jsx"],
@@ -93,7 +82,19 @@ const prodConfig = {
     },
     optimization: {
         minimize: true,
-        minimizer: [new CssMinimizerPlugin()],
+        minimizer: [`...`, new CssMinimizerPlugin()],
+        runtimeChunk: "single",
+        splitChunks: {
+            chunks: "all",
+            maxInitialRequests: Infinity,
+            minSize: 0,
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "vendor",
+                },
+            },
+        },
     },
 }
 
