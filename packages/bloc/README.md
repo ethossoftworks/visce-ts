@@ -19,12 +19,14 @@
 
 # Things to Update
 
-### webpack.config.js
+### rollup.config.js
 * Change `projectName` variable
 * Update `externals`
 
 ### package.json
 * General information
+* main property
+* module property
 * `test` script file name
 * `test-inspect` script file name
 * `bundle-inspect` script file name

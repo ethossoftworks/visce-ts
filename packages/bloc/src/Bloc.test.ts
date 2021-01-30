@@ -1,6 +1,6 @@
 import { Outcome } from "@ethossoftworks/outcome"
 import { first } from "rxjs/operators"
-import { Bloc } from "./bloc"
+import { Bloc } from "./Bloc"
 import { JobCancellationException } from "@ethossoftworks/job"
 import { fail, test, expect } from "@ethossoftworks/knock-on-wood"
 
