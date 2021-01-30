@@ -8,11 +8,12 @@ import path from "path"
 /***
  * Configuration
  */
-const projectName = "Bloc"
+const projectName = "BlocReact"
 const externals = {
     "@ethossoftworks/job": "Job",
     "@ethossoftworks/outcome": "Outcome",
     "lodash.isequal": "_.isEqual",
+    react: "react",
     rxjs: "rxjs",
     "rxjs/operators": "rxjs.operators",
 }

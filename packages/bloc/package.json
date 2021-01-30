@@ -11,7 +11,7 @@
         "streams"
     ],
     "repository": {
-        "url": ""
+        "url": "https://github.com/ethossoftworks/bloc-ts/tree/master/packages/bloc"
     },
     "main": "Bloc.cjs.js",
     "module": "Bloc.esm.js",
