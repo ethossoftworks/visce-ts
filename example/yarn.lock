@@ -16,17 +16,15 @@
 
 "@ethossoftworks/bloc-react@./ethossoftworks-bloc-react-1.0.0.tgz":
   version "1.0.0"
-  resolved "./ethossoftworks-bloc-react-1.0.0.tgz#3242f8f4b89012b674d9edc96d83d4f2f1ec89ef"
+  resolved "./ethossoftworks-bloc-react-1.0.0.tgz#06201e08d24b1ed43a6a07d0985e3d03d36ed89c"
   dependencies:
     lodash.isequal "^4.5.0"
-    rxjs "^6.6.3"
+    react "^17.0.1"
 
 "@ethossoftworks/bloc@./ethossoftworks-bloc-1.0.0.tgz":
   version "1.0.0"
-  resolved "./ethossoftworks-bloc-1.0.0.tgz#88888532444038a750ad7390ae5f8e3113081458"
+  resolved "./ethossoftworks-bloc-1.0.0.tgz#4c59e090a8188d6cb8bebb366ee16ee98b4a8cf8"
   dependencies:
-    "@ethossoftworks/job" "^1.0.2"
-    "@ethossoftworks/outcome" "^2.1.0"
     lodash.isequal "^4.5.0"
 
 "@ethossoftworks/job@^1.0.2":

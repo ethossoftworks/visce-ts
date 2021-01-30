@@ -4,7 +4,7 @@
 - [Release Notes](docs/release-notes.md)
 
 # Build
-`yarn build` or `yarn build-dev`
+`yarn build`
 <br/><br/>
 
 # Develop
@@ -19,12 +19,14 @@
 
 # Things to Update
 
-### webpack.config.js
+### rollup.config.js
 * Change `projectName` variable
 * Update `externals`
 
 ### package.json
 * General information
+* main property
+* module property
 * `test` script file name
 * `test-inspect` script file name
 * `bundle-inspect` script file name

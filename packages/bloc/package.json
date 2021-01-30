@@ -57,7 +57,7 @@
         "build-publish": "yarn build && cd ./build/dist && npm publish --access public",
         "start-bundler": "npx rollup -c rollup.config.js --environment prod --watch",
         "start-ts": "npx tsc -b src/tsconfig.json -w",
-        "bundle-inspect": "yarn build && npx source-map-explorer build/dist/Bloc.esm.js",
+        "bundle-inspect": "yarn build && npx source-map-explorer build/dist/Bloc.esm.js --no-border-checks --only-mapped",
         "test": "yarn build-test && node build/dist/Bloc.test.js",
         "test-inspect": "yarn build-test && node --inspect-brk build/dist/Bloc.test.js"
     },
