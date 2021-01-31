@@ -23,22 +23,20 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@ethossoftworks/job@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@ethossoftworks/job/-/job-1.0.2.tgz#08b4d366a73fc5239a6d31792eab515208d3d2fe"
-  integrity sha512-W/8G+kFDIDWsNb8zj0Iq85JMRJvi9V+5Yt7puX+ssbSLV72ogF+3pFTzn1PkwFGvZjDCZ1ng5mIATCPfQujWgQ==
-  dependencies:
-    "@ethossoftworks/outcome" "^2.1.0"
+"@ethossoftworks/job@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@ethossoftworks/job/-/job-1.0.3.tgz#b5003a14d81052d553cd6b239f86bcc28530d5ad"
+  integrity sha512-qD3VCZ8r5q7tflmj1oxMvlEcz3EDABTX4tRCCg+WHu8YRf8mQB3oiPQYmOyrRV6JXiF6/z7PTug6zJcPn0VMLw==
 
-"@ethossoftworks/knock-on-wood@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@ethossoftworks/knock-on-wood/-/knock-on-wood-2.0.0.tgz#38f4ee3bf4a8d3357527be9643aa9cc7eff85114"
-  integrity sha512-MX2zCmnbuz8wbrtL1KD/VPRvkK0kZPdnLFOCBDB1HXpQA2XBPzJdt5SV+szZKFyZsaz3NKQvE03OnY3qXtWEHQ==
+"@ethossoftworks/knock-on-wood@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@ethossoftworks/knock-on-wood/-/knock-on-wood-2.0.1.tgz#e853cbc3f3c1372077acdaffdc37d4c421563d8a"
+  integrity sha512-CvnEf1kRBOgBMvBq8EU49ozXZwXxrHLYZ7Gkl2sND/XZpgevkgASNZrbj99twSPHE8aaioruIs9R6v98V02Bmg==
 
-"@ethossoftworks/outcome@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@ethossoftworks/outcome/-/outcome-2.1.0.tgz#08cb846b1b41291c679a9a89980bfbde1268b730"
-  integrity sha512-E8eaC3IbDprXpI8vvJkUDXprMlNw5y97eojD7t+H/n+U3ImqTiL4Xvp19PsqSKBXYNUALvdWFGNiyrHaewudbg==
+"@ethossoftworks/outcome@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@ethossoftworks/outcome/-/outcome-2.1.1.tgz#2c68395b08e3d694b9a00cf600b22beee4afa24e"
+  integrity sha512-dXS8jUgTTOcApeoWOlCzNesP7dENpFyRD+RYI8Ii4FYoPBbtGlTVDUfO5/S/syCLbBdtocR0GJOcvsANzULaKg==
 
 "@rollup/plugin-commonjs@^17.0.0":
   version "17.1.0"
@@ -696,7 +694,7 @@ tslib@^1.9.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-typescript@^4.1.2:
+typescript@^4.1.3:
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.1.3.tgz#519d582bd94cba0cf8934c7d8e8467e473f53bb7"
   integrity sha512-B3ZIOf1IKeH2ixgHhj6la6xdwR9QrLC5d1VKeCSY4tvkqhF2eqd9O7txNlS0PO3GrBAFIdr3L1ndNwteUbZLYg==
