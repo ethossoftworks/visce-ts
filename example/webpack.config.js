@@ -58,7 +58,7 @@ const prodConfig = {
             apply: (compiler) => {
                 // Clean `./build/dist` folder
                 compiler.hooks.beforeRun.tap(`${projectName}-PreEmit`, (compilation) => {
-                    fs.rmdirSync("./build/dist", { recursive: true })
+                    fs.rmSync("./build/dist", { recursive: true, force: true })
                     fs.mkdirSync("./build/dist")
                 })
             },

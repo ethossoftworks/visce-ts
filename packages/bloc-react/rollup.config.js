@@ -24,7 +24,7 @@ const externals = {
 const clean = () => ({
     name: "clean",
     buildStart: () => {
-        fs.rmdirSync("./build/dist", { recursive: true })
+        fs.rmSync("./build/dist", { recursive: true, force: true })
         fs.mkdirSync("./build/dist")
     },
 })
