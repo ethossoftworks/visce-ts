@@ -1,13 +1,13 @@
+import { Job, JobCancellationException } from "@ethossoftworks/job"
+import { expect, fail, test } from "@ethossoftworks/knock-on-wood"
 import { Outcome } from "@ethossoftworks/outcome"
-import { first } from "rxjs/operators"
-import { Bloc } from "./Bloc"
-import { JobCancellationException } from "@ethossoftworks/job"
-import { fail, test, expect } from "@ethossoftworks/knock-on-wood"
+import { firstValueFrom } from "rxjs"
+import { Bloc, BlocStatus, EffectStatus } from "./Bloc"
 
 export function blocTests() {
     test("Get current state on subscribe", async () => {
         const bloc = new TestBloc()
-        const result = await bloc.stream.pipe(first()).toPromise()
+        const result = await firstValueFrom(bloc.stream)
         expect(result.testInt, 0, "State not returned on subscription")
     })
 
@@ -25,7 +25,7 @@ export function blocTests() {
         bloc.increment()
         bloc.increment()
         await delay(100)
-        await subscription.unsubscribe()
+        subscription.unsubscribe()
         expect(eventCount, 4, `Expected 4 emits and got ${eventCount}`)
     })
 
@@ -40,7 +40,7 @@ export function blocTests() {
         bloc.setString("")
         bloc.setString("")
         await delay(100)
-        await subscription.unsubscribe()
+        subscription.unsubscribe()
         expect(eventCount, 3, `Expected 3 emits and got ${eventCount}`)
     })
 
@@ -48,9 +48,9 @@ export function blocTests() {
         var onStartedCount = 0
         const bloc = new TestBloc({ onStartCallback: () => onStartedCount++ })
         expect(onStartedCount, 0, "On Started was called before subscription")
-        await bloc.stream.pipe(first()).toPromise()
+        await firstValueFrom(bloc.stream)
         expect(onStartedCount, 1, "On Started was not called")
-        await bloc.stream.pipe(first()).toPromise()
+        await firstValueFrom(bloc.stream)
         expect(onStartedCount, 2, "On Started was not called after dispose")
     })
 
@@ -61,11 +61,11 @@ export function blocTests() {
         const subscription1 = bloc.stream.subscribe((event) => {})
         const subscription2 = bloc.stream.subscribe((event) => {})
         expect(onDisposedCount, 0, "onDispose was called before subscription was cancelled")
-        await subscription1.unsubscribe()
+        subscription1.unsubscribe()
         expect(onDisposedCount, 0, "onDispose was called with an active subscription")
-        await subscription2.unsubscribe()
+        subscription2.unsubscribe()
         expect(onDisposedCount, 1, "onDispose was not called")
-        await bloc.stream.pipe(first()).toPromise()
+        await firstValueFrom(bloc.stream)
         expect(onDisposedCount, 2, "onDispose was not called after restart")
     })
 
@@ -74,14 +74,14 @@ export function blocTests() {
         bloc.increment()
         bloc.increment()
         expect(bloc.state.testInt, 2, "State did not update")
-        await bloc.stream.pipe(first()).toPromise()
+        await firstValueFrom(bloc.stream)
         expect(bloc.state.testInt, 0, "State did not reset on dispose with persistStateOnDispose == false")
 
         const bloc2 = new TestBloc({ persistStateOnDispose: true })
         bloc2.increment()
         bloc2.increment()
         expect(bloc2.state.testInt, 2, "State did not update")
-        await bloc2.stream.pipe(first()).toPromise()
+        await firstValueFrom(bloc2.stream)
         expect(bloc2.state.testInt, 2, "State reset on dispose with persistStateOnDispose == true")
     })
 
@@ -95,7 +95,7 @@ export function blocTests() {
             return Outcome.ok(null)
         })
 
-        await bloc.stream.pipe(first()).toPromise()
+        await firstValueFrom(bloc.stream)
         const jobResult = await jobFuture
         if (!jobResult.isError() || !(jobResult.error instanceof JobCancellationException))
             fail("Bloc scope was not cancelled on dispose")
@@ -107,7 +107,10 @@ export function blocTests() {
         const originalState = bloc.state
         expect(bloc.state.testInt, 0, "testInt was not 0")
         bloc.increment()
-        expect(bloc.state.testInt, 1, "Update did not update state")
+        bloc.increment()
+        bloc.increment()
+        bloc.increment()
+        expect(bloc.state.testInt, 4, "Update did not update state")
         expect(originalState.testInt, 0, "Update is mutating in place instead of creating an immutable copy")
     })
 
@@ -139,7 +142,7 @@ export function blocTests() {
         await delay(100)
         await bloc.testEffect()
         await delay(600)
-        if (bloc.state.testInt != 1)
+        if (bloc.state.testInt !== 1)
             fail(`Effects were not cancelled on new effect launch. State was incremented to ${bloc.state.testInt}.`)
 
         // Explicit cancellation
@@ -162,8 +165,20 @@ export function blocTests() {
         if (bloc.state.testInt != 0) fail(`TestEffect2 onCancel did not work properly. State: ${bloc.state.testInt}.`)
     })
 
+    test("Effect OnDone", async () => {
+        const bloc = new TestBloc()
+        bloc.testEffect3()
+        await new Promise(async (resolve) => {
+            await delay(16)
+            bloc.cancelTestEffect3()
+            resolve(undefined)
+        })
+        await bloc.testEffect3()
+        expect(bloc.state.testInt, -3, `State: ${bloc.state.testInt}`)
+    })
+
     test("Effect cancelOnDispose", async () => {
-        // cancelOnDispose == true
+        // cancelOnDispose === true
         const bloc = new TestBloc()
         const subscription = bloc.stream.subscribe((state) => {})
         const effectPromise = bloc.testEffect()
@@ -173,7 +188,7 @@ export function blocTests() {
         if (!effectResult.isError() || !(effectResult.error instanceof JobCancellationException))
             fail("Effect was not cancelled")
 
-        // cancelOnDispose == false
+        // cancelOnDispose === false
         const subscription2 = bloc.stream.subscribe((state) => {})
         const effectPromise2 = bloc.noCancelOnDisposeEffect()
         subscription2.unsubscribe()
@@ -181,24 +196,52 @@ export function blocTests() {
         expect(bloc.state.testInt, 1, "State should have been 1 due to cancelOnDispose == false")
         if (!effectResult2.isOk() || effectResult2.value.testInt !== 1) fail("Effect was cancelled")
     })
+
+    test("Bloc Status", async () => {
+        const bloc = new TestBloc()
+        expect(bloc.status, BlocStatus.Idle, "Bloc status was not Idle")
+        const sub = bloc.stream.subscribe(() => {})
+        expect(bloc.status, BlocStatus.Started, "Bloc status was not Started")
+        sub.unsubscribe()
+        expect(bloc.status, BlocStatus.Idle, "Bloc status was not Idle after unsubscribe")
+    })
+
+    test("Computed Value", async () => {
+        const bloc = new TestBloc()
+        expect(bloc.state.computedValue, 2, "Computed Value was not set on initial state")
+        bloc.increment()
+        expect(bloc.state.computedValue, 3, "Computed Value was not updated")
+        const sub = bloc.stream.subscribe(() => {})
+        sub.unsubscribe()
+        expect(bloc.state.computedValue, 2, "Computed Value was not reset on dispose")
+    })
+
+    test("Effect Status", async () => {
+        const bloc = new TestBloc()
+        const effect = bloc.testEffect()
+        expect(bloc.effectStatus(bloc.testEffect), EffectStatus.Running)
+        expect(bloc.effectStatus("nothing"), EffectStatus.Idle)
+        await effect
+        expect(bloc.effectStatus(bloc.testEffect), EffectStatus.Idle)
+    })
 }
 
-type _TestState = {
+type TestState = {
     testString: string
     testInt: number
+    computedValue: number
 }
 
-function newTestState(): _TestState {
-    return { testInt: 0, testString: "Test" }
+function newTestState(): TestState {
+    return { testInt: 0, testString: "Test", computedValue: 0 }
 }
 
-class TestBloc extends Bloc<_TestState> {
-    onStartCallback?: () => void
-    onDisposeCallback?: () => void
+class TestBloc extends Bloc<TestState> {
+    private onStartCallback?: () => void
+    private onDisposeCallback?: () => void
 
     private static Effects = {
-        Test: "testEffect",
-        Test2: "testEffect2",
+        Test3: "testEffect3",
         NoCancelOnDispose: "noCancelOnDisposeEffect",
     }
 
@@ -207,26 +250,33 @@ class TestBloc extends Bloc<_TestState> {
         onStartCallback?: () => void
         onDisposeCallback?: () => void
     }) {
-        super(newTestState(), options?.persistStateOnDispose ?? false)
+        super(newTestState(), { persistStateOnDispose: options?.persistStateOnDispose ?? false })
         this.onStartCallback = options?.onStartCallback
         this.onDisposeCallback = options?.onDisposeCallback
     }
 
-    onStart() {
+    override computed(state: TestState): Partial<TestState> {
+        return {
+            computedValue: state.testInt + 2,
+        }
+    }
+
+    override onStart() {
         this.onStartCallback?.()
     }
 
-    onDispose() {
+    override onDispose() {
         this.onDisposeCallback?.()
     }
 
-    increment = () => this.update((state) => ({ ...state, testInt: state.testInt + 1 }))
+    increment = () => this.update({ testInt: this.state.testInt + 1 })
+    decrement = () => this.update({ testInt: this.state.testInt - 1 })
 
-    setString = (value: string) => this.update((state) => ({ ...state, testString: value }))
+    setString = (value: string) => this.update({ testString: value })
 
     testEffect = () =>
         this.effect({
-            id: TestBloc.Effects.Test,
+            id: this.testEffect,
             block: async (job) => {
                 await job.delay(500)
                 return Outcome.ok(this.increment())
@@ -235,12 +285,28 @@ class TestBloc extends Bloc<_TestState> {
 
     testEffect2 = () =>
         this.effect({
-            id: TestBloc.Effects.Test2,
+            id: this.testEffect2,
             block: async (job) => {
                 await job.delay(500)
                 return Outcome.ok(this.increment())
             },
-            onCancel: () => this.update((state) => ({ ...state, testInt: 0 })),
+            onDone: (result) => {
+                if (!Job.isCancelled(result)) return
+                this.update({ testInt: 0 })
+            },
+        })
+
+    testEffect3 = () =>
+        this.effect({
+            id: TestBloc.Effects.Test3,
+            block: async (job) => {
+                await job.delay(500)
+                return Outcome.ok(this.increment())
+            },
+            onDone: () => {
+                this.decrement()
+                this.decrement()
+            },
         })
 
     noCancelOnDisposeEffect = () =>
@@ -253,8 +319,9 @@ class TestBloc extends Bloc<_TestState> {
             },
         })
 
-    cancelTestEffect = () => this.cancelEffect(TestBloc.Effects.Test)
-    cancelTestEffect2 = () => this.cancelEffect(TestBloc.Effects.Test2)
+    cancelTestEffect = () => this.cancelEffect(this.testEffect)
+    cancelTestEffect2 = () => this.cancelEffect(this.testEffect2)
+    cancelTestEffect3 = () => this.cancelEffect(TestBloc.Effects.Test3)
 }
 
 const delay = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds))

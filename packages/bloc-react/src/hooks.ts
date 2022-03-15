@@ -1,14 +1,18 @@
 import isEqual from "lodash.isequal"
-import { useLayoutEffect, useMemo } from "react"
-import { useState } from "react"
+import { DependencyList, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { distinctUntilChanged, map, skip } from "rxjs/operators"
-import { Bloc, BlocStateType, BlocViewModel } from "@ethossoftworks/bloc"
+import { Bloc, BlocStateType } from "./Bloc"
+import { BlocCoordinator } from "./BlocCoordinator"
 
 /**
  * Subscribes to a Bloc and returns its state. The view will be updated when the bloc is updated.
  */
-export function useBloc<T extends Bloc<any>, R>(bloc: T): [BlocStateType<T>, typeof bloc] {
+export function useBloc<T extends () => Bloc<any>>(
+    factory: T,
+    dependencies: DependencyList = []
+): [BlocStateType<ReturnType<T>>, ReturnType<T>] {
     const [_, setState] = useState<object>({})
+    const bloc = useMemo(factory, dependencies) as ReturnType<T>
 
     useLayoutEffect(() => {
         const subscription = bloc.stream.pipe(skip(1)).subscribe({ next: () => setState({}) })
@@ -22,11 +26,16 @@ export function useBloc<T extends Bloc<any>, R>(bloc: T): [BlocStateType<T>, typ
  * Subscribes to a selection Bloc state and returns the selected state. The view will be updated when the bloc is
  * updated and the selected state has changed.
  */
-export function useBlocSelector<T extends Bloc<any>, R>(
-    bloc: T,
-    selector: (state: BlocStateType<T>) => R
-): [R, typeof bloc] {
+export function useBlocSelector<T extends () => Bloc<any>, R>(
+    factory: T,
+    selector: (state: BlocStateType<T>) => R,
+    dependencies: DependencyList = []
+): [R, ReturnType<T>] {
+    const bloc = useMemo(factory, dependencies) as ReturnType<T>
     const [_, setState] = useState<object>({})
+    const stateRef = useRef<R | null>(null)
+
+    if (stateRef.current === null) stateRef.current = selector(bloc.state)
 
     useLayoutEffect(() => {
         const subscription = bloc.stream
@@ -35,40 +44,44 @@ export function useBlocSelector<T extends Bloc<any>, R>(
                 map((value) => selector(value)),
                 distinctUntilChanged(isEqual)
             )
-            .subscribe({ next: () => setState({}) })
+            .subscribe({
+                next: (newState) => {
+                    stateRef.current = newState
+                    setState({})
+                },
+            })
         return () => subscription.unsubscribe()
     }, [])
 
-    return [selector(bloc.state), bloc]
+    return [stateRef.current ?? selector(bloc.state), bloc]
 }
 
-/**
- * Creates a memoized Bloc with the given factory and subscribes to the it. This is useful for creating a Bloc
- * inside of a component and using it for state management.
- */
-export function useMemoBloc<T extends () => Bloc<any>>(factory: T): [ReturnType<T>, BlocStateType<T>] {
-    return useBloc(useMemo(factory, [])) as [ReturnType<T>, BlocStateType<T>]
-}
-
-type BlocViewModelReturnType<T extends BlocViewModel<any[], any>> = T extends BlocViewModel<any[], infer R>
+type BlocCoordinatorReturnType<T extends BlocCoordinator<any[], any>> = T extends BlocCoordinator<any[], infer R>
     ? R
     : unknown
 
 /**
- * Returns a memoized BlocViewModel and its current state.
+ * Returns a memoized BlocCoordinator and its current state.
  */
-export function useBlocViewModel<T extends () => BlocViewModel<any[], any>>(
-    factory: T
-): [BlocViewModelReturnType<ReturnType<T>>, ReturnType<T>] {
-    const viewModel = useMemo(factory, [])
+export function useBlocCoordinator<T extends () => BlocCoordinator<any[], any>>(
+    factory: T,
+    dependencies: DependencyList = []
+): [BlocCoordinatorReturnType<ReturnType<T>>, ReturnType<T>] {
+    const coordinator = useMemo(factory, dependencies)
     const [_, setState] = useState<object>({})
+    const stateRef = useRef<BlocCoordinatorReturnType<ReturnType<T>> | null>(null)
+
+    if (stateRef.current === null) stateRef.current = coordinator.state
 
     useLayoutEffect(() => {
-        const subscription = viewModel.stream
-            .pipe(skip(1), distinctUntilChanged(isEqual))
-            .subscribe({ next: () => setState({}) })
+        const subscription = coordinator.stream.pipe(skip(1), distinctUntilChanged(isEqual)).subscribe({
+            next: (newState) => {
+                stateRef.current = newState
+                setState({})
+            },
+        })
         return () => subscription.unsubscribe()
     }, [])
 
-    return [viewModel.state, viewModel as ReturnType<T>]
+    return [stateRef.current ?? coordinator.state, coordinator as ReturnType<T>]
 }

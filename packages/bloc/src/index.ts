@@ -1,2 +1,2 @@
 export { Bloc, BlocStateType } from "./Bloc"
-export { BlocViewModel } from "./BlocViewModel"
+export { BlocCoordinator } from "./BlocCoordinator"
