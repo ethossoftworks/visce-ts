@@ -1,8 +1,8 @@
 import { Job, JobCancellationException, JobFunc, SupervisorJob } from "@ethossoftworks/job"
 import { Outcome } from "@ethossoftworks/outcome"
 import isEqual from "lodash.isequal"
-import { BehaviorSubject, Observable } from "rxjs"
-import { distinctUntilChanged } from "rxjs/operators"
+import { BehaviorSubject, Observable, Subscription } from "rxjs"
+import { distinctUntilChanged, skip } from "rxjs/operators"
 
 /**
  * Bloc (Business Logic Component)
@@ -12,7 +12,7 @@ import { distinctUntilChanged } from "rxjs/operators"
  * Bloc Lifecycle
  * A Bloc's lifecycle is dependent on its observers. When the first observer subscribes to the Bloc [onStart] is called.
  * When the last observer unsubscribes [onDispose] is called. A Bloc may choose to reset its state when [onDispose]
- * is called by setting [persistStateOnDispose] to false. A Bloc will call [onStart] again if it gains a new
+ * is called by setting [retainStateOnDispose] to false. A Bloc will call [onStart] again if it gains a new
  * observer after it has been disposed. Likewise, a Bloc will call [onDispose] again if it loses those observers.
  *
  * Observing State
@@ -33,13 +33,15 @@ import { distinctUntilChanged } from "rxjs/operators"
  *
  * [initialState] The initial state of a Bloc.
  *
- * [persistStateOnDispose] If false, the internal state will be reset to [initialState] when the bloc is
+ * [retainStateOnDispose] If false, the internal state will be reset to [initialState] when the bloc is
  * disposed. If true, the Bloc's state will persist until the Bloc is garbage collected.
  */
-export abstract class Bloc<T> {
+export abstract class Bloc<T, D extends Bloc<any>[] = []> {
     private readonly _effects: Map<EffectId, CancellableEffect<any>> = new Map()
     private readonly _state: BehaviorSubject<T>
-    private readonly persistStateOnDispose: boolean
+    private readonly retainStateOnDispose: boolean
+    private readonly dependencies: D
+    private dependencySubscriptions: Subscription[] = []
     private _observers: number = 0
 
     /**
@@ -73,8 +75,12 @@ export abstract class Bloc<T> {
         }
     }).pipe(distinctUntilChanged(isEqual))
 
-    constructor(private initialState: T, { persistStateOnDispose = false }: { persistStateOnDispose?: boolean } = {}) {
-        this.persistStateOnDispose = persistStateOnDispose
+    constructor(
+        private initialState: T,
+        { retainStateOnDispose = false, dependencies }: { retainStateOnDispose?: boolean; dependencies: D }
+    ) {
+        this.retainStateOnDispose = retainStateOnDispose
+        this.dependencies = dependencies
         this._state = new BehaviorSubject(this.nextStateWithComputed(this.initialState))
         sendDevToolsUpdate(this, "New Bloc", this.state)
     }
@@ -90,7 +96,7 @@ export abstract class Bloc<T> {
      * Returns the current state of the Bloc.
      */
     get state(): T {
-        return this._state.value
+        return this.dependencies.length > 0 ? this.nextStateWithComputed(this._state.value) : this._state.value
     }
 
     /**
@@ -104,7 +110,7 @@ export abstract class Bloc<T> {
     /**
      * Computes properties based on latest state for every update
      */
-    protected computed?(state: T): Partial<T> {
+    protected computed?(state: T, dependencies: D): Partial<T> {
         return state
     }
 
@@ -138,7 +144,7 @@ export abstract class Bloc<T> {
      *
      * [onDone] a block of synchronous code to be run when the effect finishes regardless of success or failure. This
      * can be used to update state regardless of if an effect is cancelled or not. NOTE: It is not guaranteed that
-     * [onDone] will run before disposal and resetting of state if [persistStateOnDispose === false] so be careful
+     * [onDone] will run before disposal and resetting of state if [retainStateOnDispose === false] so be careful
      * when updating state.
      */
     protected async effect<R>({
@@ -188,17 +194,24 @@ export abstract class Bloc<T> {
 
     private handleSubscribe() {
         if (this._observers > 0) return
+
+        this.dependencySubscriptions = this.dependencies.map((bloc) =>
+            bloc.stream.pipe(skip(1)).subscribe(() => this.update(this.state))
+        )
         Logger.log("Starting Bloc", this.constructor.name)
         this.onStart?.()
     }
 
     private handleUnsubscribe() {
         if (this._observers > 0) return
+
         Logger.log("Disposing Bloc", this.constructor.name)
         this._effects.forEach((effect, _) => (effect.cancelOnDispose ? effect.cancel() : null))
         this._effects.clear()
+        this.dependencySubscriptions.forEach((sub) => sub.unsubscribe())
+        this.dependencySubscriptions = []
         this.blocScope.cancelChildren()
-        if (!this.persistStateOnDispose) {
+        if (!this.retainStateOnDispose) {
             this._state.next(this.nextStateWithComputed(this.initialState))
             sendDevToolsUpdate(this, "Dispose", this.state)
         }
@@ -206,7 +219,7 @@ export abstract class Bloc<T> {
     }
 
     private nextStateWithComputed(state: T): T {
-        return this.computed ? { ...state, ...this.computed(state) } : state
+        return this.computed ? { ...state, ...this.computed(state, this.dependencies) } : state
     }
 }
 
@@ -281,7 +294,7 @@ async function connectDevTools() {
     devTools.init(devToolsState)
 }
 
-async function sendDevToolsUpdate(bloc: Bloc<any>, action: string, state: any) {
+async function sendDevToolsUpdate(bloc: Bloc<any, any>, action: string, state: any) {
     if (!devTools || devTools.send === undefined) return
     devToolsState = { ...devToolsState, [bloc.constructor.name]: state }
     devTools.send({ type: `${bloc.constructor.name} - ${action}`, state: state }, devToolsState)

@@ -1,7 +1,7 @@
 import { Job, JobCancellationException } from "@ethossoftworks/job"
-import { expect, fail, test } from "@ethossoftworks/knock-on-wood"
+import { expect, fail, test, _test } from "@ethossoftworks/knock-on-wood"
 import { Outcome } from "@ethossoftworks/outcome"
-import { firstValueFrom } from "rxjs"
+import { firstValueFrom, skip } from "rxjs"
 import { Bloc, BlocStatus, EffectStatus } from "./Bloc"
 
 export function blocTests() {
@@ -70,19 +70,19 @@ export function blocTests() {
     })
 
     test("Persist State On Dispose", async () => {
-        const bloc = new TestBloc({ persistStateOnDispose: false })
+        const bloc = new TestBloc({ retainStateOnDispose: false })
         bloc.increment()
         bloc.increment()
         expect(bloc.state.testInt, 2, "State did not update")
         await firstValueFrom(bloc.stream)
-        expect(bloc.state.testInt, 0, "State did not reset on dispose with persistStateOnDispose == false")
+        expect(bloc.state.testInt, 0, "State did not reset on dispose with retainStateOnDispose == false")
 
-        const bloc2 = new TestBloc({ persistStateOnDispose: true })
+        const bloc2 = new TestBloc({ retainStateOnDispose: true })
         bloc2.increment()
         bloc2.increment()
         expect(bloc2.state.testInt, 2, "State did not update")
         await firstValueFrom(bloc2.stream)
-        expect(bloc2.state.testInt, 2, "State reset on dispose with persistStateOnDispose == true")
+        expect(bloc2.state.testInt, 2, "State reset on dispose with retainStateOnDispose == true")
     })
 
     test("BlocScope", async () => {
@@ -224,6 +224,53 @@ export function blocTests() {
         await effect
         expect(bloc.effectStatus(bloc.testEffect), EffectStatus.Idle)
     })
+
+    _test("Dependency", async () => {
+        let testBlocDisposed = false
+        const testBloc = new TestBloc({
+            retainStateOnDispose: true,
+            onDisposeCallback: () => {
+                testBlocDisposed = true
+            },
+        })
+        testBloc.setString("dependency")
+        testBloc.increment()
+        const dependencyBloc = new TestDependencyBloc(testBloc)
+
+        // Test initial computed state without subscription
+        expect(dependencyBloc.state.dependentString, "dependency", "Computed dependent state was incorrect")
+
+        // Test computed dependency state with subscription
+        const subDeferred = firstValueFrom(dependencyBloc.stream.pipe(skip(1)))
+        testBloc.increment()
+        const subValue = await subDeferred
+        expect(subValue.dependentInt, 2, "Dependency update did not update parent value")
+
+        // Test that dependencies are disposed
+        delay(16)
+        expect(testBlocDisposed, true, "Dependency was not disposed")
+
+        // Test Resubscribe
+        const subDeferred2 = firstValueFrom(dependencyBloc.stream.pipe(skip(1)))
+        testBloc.increment()
+        const subValue2 = await subDeferred2
+        expect(subValue2.dependentInt, 3, "Dependency update did not update parent value after resubscription")
+
+        // Test distinct until changed
+        var updateCount = 0
+        const sub = dependencyBloc.stream.pipe(skip(1)).subscribe(() => {
+            updateCount++
+        })
+        testBloc.setString("distinctTest1")
+        delay(16)
+        testBloc.setString("distinctTest2")
+        delay(16)
+        testBloc.setString("distinctTest2")
+        delay(16)
+        testBloc.setString("distinctTest2")
+        sub.unsubscribe()
+        expect(updateCount, 2, "Dependency emitted update with equal value")
+    })
 }
 
 type TestState = {
@@ -246,11 +293,11 @@ class TestBloc extends Bloc<TestState> {
     }
 
     constructor(options?: {
-        persistStateOnDispose?: boolean
+        retainStateOnDispose?: boolean
         onStartCallback?: () => void
         onDisposeCallback?: () => void
     }) {
-        super(newTestState(), { persistStateOnDispose: options?.persistStateOnDispose ?? false })
+        super(newTestState(), { retainStateOnDispose: options?.retainStateOnDispose ?? false, dependencies: [] })
         this.onStartCallback = options?.onStartCallback
         this.onDisposeCallback = options?.onDisposeCallback
     }
@@ -322,6 +369,33 @@ class TestBloc extends Bloc<TestState> {
     cancelTestEffect = () => this.cancelEffect(this.testEffect)
     cancelTestEffect2 = () => this.cancelEffect(this.testEffect2)
     cancelTestEffect3 = () => this.cancelEffect(TestBloc.Effects.Test3)
+}
+
+type TestDependencyState = {
+    count: number
+    dependentString: string
+    dependentInt: number
+}
+
+class TestDependencyBloc extends Bloc<TestDependencyState, [TestBloc]> {
+    constructor(private testBloc: TestBloc) {
+        super(
+            { count: 0, dependentString: "", dependentInt: 0 },
+            { retainStateOnDispose: true, dependencies: [testBloc] }
+        )
+    }
+
+    protected computed(state: TestDependencyState, [testBloc]: [TestBloc]): Partial<TestDependencyState> {
+        return {
+            ...state,
+            dependentString: testBloc.state.testString,
+            dependentInt: testBloc.state.testInt,
+        }
+    }
+
+    set(value: number) {
+        this.update({ count: value })
+    }
 }
 
 const delay = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds))
