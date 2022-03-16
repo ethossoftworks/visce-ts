@@ -82,7 +82,7 @@ type TestCombinedState = {
 
 class TestBloc1 extends Bloc<TestState> {
     constructor() {
-        super({ one: 0 }, { retainStateOnDispose: false, dependencies: [] })
+        super({ initialState: { one: 0 }, retainStateOnDispose: false, dependencies: [] })
     }
 
     increment = () => this.update({ one: this.state.one + 1 })
@@ -90,7 +90,7 @@ class TestBloc1 extends Bloc<TestState> {
 
 class TestBloc2 extends Bloc<TestState2> {
     constructor() {
-        super({ two: "" }, { retainStateOnDispose: false, dependencies: [] })
+        super({ initialState: { two: "" }, retainStateOnDispose: false, dependencies: [] })
     }
 
     setValue = (value: string) => this.update({ two: value })

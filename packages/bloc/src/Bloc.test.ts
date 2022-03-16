@@ -297,7 +297,11 @@ class TestBloc extends Bloc<TestState> {
         onStartCallback?: () => void
         onDisposeCallback?: () => void
     }) {
-        super(newTestState(), { retainStateOnDispose: options?.retainStateOnDispose ?? false, dependencies: [] })
+        super({
+            initialState: newTestState(),
+            retainStateOnDispose: options?.retainStateOnDispose ?? false,
+            dependencies: [],
+        })
         this.onStartCallback = options?.onStartCallback
         this.onDisposeCallback = options?.onDisposeCallback
     }
@@ -379,13 +383,14 @@ type TestDependencyState = {
 
 class TestDependencyBloc extends Bloc<TestDependencyState, [TestBloc]> {
     constructor(private testBloc: TestBloc) {
-        super(
-            { count: 0, dependentString: "", dependentInt: 0 },
-            { retainStateOnDispose: true, dependencies: [testBloc] }
-        )
+        super({
+            initialState: { count: 0, dependentString: "", dependentInt: 0 },
+            retainStateOnDispose: true,
+            dependencies: [testBloc],
+        })
     }
 
-    protected computed(state: TestDependencyState, [testBloc]: [TestBloc]): Partial<TestDependencyState> {
+    override computed(state: TestDependencyState, [testBloc]: [TestBloc]): Partial<TestDependencyState> {
         return {
             ...state,
             dependentString: testBloc.state.testString,

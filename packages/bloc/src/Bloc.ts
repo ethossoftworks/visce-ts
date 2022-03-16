@@ -37,6 +37,7 @@ import { distinctUntilChanged, skip } from "rxjs/operators"
  * disposed. If true, the Bloc's state will persist until the Bloc is garbage collected.
  */
 export abstract class Bloc<T, D extends Bloc<any>[] = []> {
+    private readonly initialState: T
     private readonly _effects: Map<EffectId, CancellableEffect<any>> = new Map()
     private readonly _state: BehaviorSubject<T>
     private readonly retainStateOnDispose: boolean
@@ -75,10 +76,16 @@ export abstract class Bloc<T, D extends Bloc<any>[] = []> {
         }
     }).pipe(distinctUntilChanged(isEqual))
 
-    constructor(
-        private initialState: T,
-        { retainStateOnDispose = false, dependencies }: { retainStateOnDispose?: boolean; dependencies: D }
-    ) {
+    constructor({
+        initialState,
+        retainStateOnDispose = false,
+        dependencies,
+    }: {
+        initialState: T
+        retainStateOnDispose?: boolean
+        dependencies: D
+    }) {
+        this.initialState = initialState
         this.retainStateOnDispose = retainStateOnDispose
         this.dependencies = dependencies
         this._state = new BehaviorSubject(this.nextStateWithComputed(this.initialState))
