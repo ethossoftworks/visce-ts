@@ -104,7 +104,9 @@ export abstract class Bloc<T, D extends Bloc<any>[] = []> {
      * Returns the current state of the Bloc.
      */
     get state(): T {
-        return this.dependencies.length > 0 ? this.nextStateWithComputed(this._state.value) : this._state.value
+        return this.dependencies.length > 0 && this._observers == 0
+            ? this.nextStateWithComputed(this._state.value)
+            : this._state.value
     }
 
     /**
