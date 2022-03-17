@@ -58,6 +58,7 @@ export abstract class Bloc<T, D extends Bloc<any>[] = []> {
     public readonly blocScope = new SupervisorJob()
 
     private readonly _proxy: Observable<T> = new Observable<T>((subscriber) => {
+        if (this.dependencies.length > 0) this._state.next(this.nextStateWithComputed(this._state.value))
         this.handleSubscribe()
         this._observers++
         Logger.log("Adding Bloc dependency", this.constructor.name)

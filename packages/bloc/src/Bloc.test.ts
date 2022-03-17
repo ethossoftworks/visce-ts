@@ -1,5 +1,5 @@
 import { Job, JobCancellationException } from "@ethossoftworks/job"
-import { expect, fail, test, _test } from "@ethossoftworks/knock-on-wood"
+import { expect, fail, test } from "@ethossoftworks/knock-on-wood"
 import { Outcome } from "@ethossoftworks/outcome"
 import { firstValueFrom, skip } from "rxjs"
 import { Bloc, BlocStatus, EffectStatus } from "./Bloc"
@@ -225,7 +225,7 @@ export function blocTests() {
         expect(bloc.effectStatus(bloc.testEffect), EffectStatus.Idle)
     })
 
-    _test("Dependency", async () => {
+    test("Dependency", async () => {
         let testBlocDisposed = false
         const testBloc = new TestBloc({
             retainStateOnDispose: true,
@@ -238,7 +238,15 @@ export function blocTests() {
         const dependencyBloc = new TestDependencyBloc(testBloc)
 
         // Test initial computed state without subscription
-        expect(dependencyBloc.state.dependentString, "dependency", "Computed dependent state was incorrect")
+        expect(dependencyBloc.state.dependentString, "dependency", "Computed initial dependent state was incorrect")
+
+        // Test updated dependency state on first()
+        testBloc.setString("dependency2")
+        expect(
+            (await firstValueFrom(dependencyBloc.stream)).dependentString,
+            "dependency2",
+            "Dependent state on first() was incorrect after dependent update"
+        )
 
         // Test computed dependency state with subscription
         const subDeferred = firstValueFrom(dependencyBloc.stream.pipe(skip(1)))
