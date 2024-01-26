@@ -4,8 +4,8 @@
     "license": "UNLICENSED",
     "version": "1.0.0",
     "dependencies": {
-        "@ethossoftworks/interactor": "./ethossoftworks-interactor-1.0.0.tgz",
-        "@ethossoftworks/interactor-react": "./ethossoftworks-interactor-react-1.0.0.tgz",
+        "@ethossoftworks/interactor": "file:./ethossoftworks-interactor-1.0.0.tgz",
+        "@ethossoftworks/interactor-react": "file:./ethossoftworks-interactor-react-1.0.0.tgz",
         "@ethossoftworks/job": "^1.0.3",
         "@ethossoftworks/outcome": "^2.1.1",
         "lodash.isequal": "^4.5.0",

@@ -1,7 +1,7 @@
+import { Interactor, InteractorStateType } from "@ethossoftworks/interactor"
 import isEqual from "lodash.isequal"
 import { DependencyList, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { distinctUntilChanged, map, skip } from "rxjs/operators"
-import { Interactor, InteractorStateType } from "./Interactor"
 
 /**
  * Subscribes to a Interactor and returns its state. The view will be updated when the interactor is updated.

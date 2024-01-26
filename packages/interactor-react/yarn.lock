@@ -36,6 +36,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@ethossoftworks/interactor-react@workspace:."
   dependencies:
+    "@ethossoftworks/interactor": "file:ethossoftworks-interactor-1.0.0.tgz"
     "@ethossoftworks/job": ^1.0.3
     "@ethossoftworks/knock-on-wood": ^2.1.0
     "@ethossoftworks/outcome": ^2.1.1
@@ -52,10 +53,21 @@ __metadata:
     rxjs: ^7.5.5
     source-map-explorer: ^2.5.2
     typescript: ^4.6.2
-  peerDependencies:
-    "@ethossoftworks/interactor": "*"
   languageName: unknown
   linkType: soft
+
+"@ethossoftworks/interactor@file:ethossoftworks-interactor-1.0.0.tgz::locator=%40ethossoftworks%2Finteractor-react%40workspace%3A.":
+  version: 1.0.0
+  resolution: "@ethossoftworks/interactor@file:ethossoftworks-interactor-1.0.0.tgz::locator=%40ethossoftworks%2Finteractor-react%40workspace%3A."
+  dependencies:
+    lodash.isequal: ^4.5.0
+  peerDependencies:
+    "@ethossoftworks/job": ^1.0.3
+    "@ethossoftworks/outcome": ^2.1.1
+    rxjs: ^7.5.5
+  checksum: 529843e462cac098deb9eea3901fdecfb9e24f077ff3045ffa55b52a30d1fa4faffbf14050fddee3741e75185db119c811ebd853a50c0ec1dda7104c75dc741d
+  languageName: node
+  linkType: hard
 
 "@ethossoftworks/job@npm:^1.0.3":
   version: 1.0.3
