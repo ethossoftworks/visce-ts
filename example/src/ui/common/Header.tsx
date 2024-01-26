@@ -1,11 +1,11 @@
 import React from "react"
 import { DI } from "../DI"
-import { BlocViewModel } from "@ethossoftworks/bloc"
-import { useBlocViewModel } from "@ethossoftworks/bloc-react"
-import { UserBloc, UserState } from "state/user/UserBloc"
+import { InteractorViewModel } from "@ethossoftworks/interactor"
+import { useInteractorViewModel } from "@ethossoftworks/interactor-react"
+import { UserInteractor, UserState } from "state/user/UserInteractor"
 
 export function Header() {
-    const [state, viewModel] = useBlocViewModel(() => new HeaderViewModel(DI.userBloc))
+    const [state, viewModel] = useInteractorViewModel(() => new HeaderViewModel(DI.userInteractor))
 
     return (
         <div className="header">
@@ -20,12 +20,12 @@ type HeaderViewModelState = {
     userName: string
 }
 
-class HeaderViewModel extends BlocViewModel<[UserState], HeaderViewModelState> {
-    constructor(private userBloc: UserBloc) {
-        super([userBloc])
+class HeaderViewModel extends InteractorViewModel<[UserState], HeaderViewModelState> {
+    constructor(private userInteractor: UserInteractor) {
+        super([userInteractor])
     }
 
     transform = ([userState]: [UserState]) => ({ userName: userState.user?.email ?? "" })
 
-    logout = () => this.userBloc.logout()
+    logout = () => this.userInteractor.logout()
 }

@@ -7,14 +7,14 @@ import { HomeScreen } from "ui/home/HomeScreen"
 import { LoginScreen } from "ui/login/ui/LoginScreen"
 import { AuthRoute } from "ui/common/AuthRoute"
 import { DI } from "../DI"
-import { useBloc } from "@ethossoftworks/bloc-react"
+import { useInteractor } from "@ethossoftworks/interactor-react"
 
 export function App() {
     const route = useRoute()
-    const [userState, userBloc] = useBloc(DI.userBloc)
+    const [userState, userInteractor] = useInteractor(DI.userInteractor)
 
     useEffect(() => {
-        userBloc.initialize()
+        userInteractor.initialize()
     }, [])
 
     if (!userState.isInitialized) return <div>Loading...</div>

@@ -1,6 +1,6 @@
-import { UserError, UserService } from "service/user/UserService"
-import { Bloc } from "@ethossoftworks/bloc"
+import { Interactor } from "@ethossoftworks/interactor"
 import { arrayOfNotNull } from "lib/util"
+import { UserError, UserService } from "service/user/UserService"
 
 export type LoginState = {
     email: string
@@ -25,7 +25,7 @@ export enum LoginFormValidationError {
     Password,
 }
 
-export class LoginBloc extends Bloc<LoginState> {
+export class LoginInteractor extends Interactor<LoginState> {
     constructor(private userService: UserService) {
         super(newLoginState())
     }

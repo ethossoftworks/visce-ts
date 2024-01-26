@@ -1,21 +1,21 @@
 {
-    "name": "@ethossoftworks/bloc-react",
+    "name": "@ethossoftworks/interactor-react",
     "version": "1.0.0",
     "author": {
         "name": "Ryan Mitchener"
     },
     "license": "MIT",
-    "description": "React hooks for @ethossoftworks/bloc",
+    "description": "React hooks for @ethossoftworks/interactor",
     "keywords": [
         "state management",
         "React",
         "Hooks"
     ],
     "repository": {
-        "url": "https://github.com/ethossoftworks/bloc-ts/tree/master/packages/bloc-react"
+        "url": "https://github.com/ethossoftworks/interactor-ts/tree/master/packages/interactor-react"
     },
-    "main": "BlocReact.cjs.js",
-    "module": "BlocReact.esm.js",
+    "main": "InteractorReact.cjs.js",
+    "module": "InteractorReact.esm.js",
     "types": "types/index.d.ts",
     "files": [
         "types/",
@@ -29,7 +29,7 @@
         "react": "^17.0.2"
     },
     "peerDependencies": {
-        "@ethossoftworks/bloc": ".\\ethossoftworks-bloc-1.0.0.tgz"
+        "@ethossoftworks/interactor": "*"
     },
     "devDependencies": {
         "@ethossoftworks/job": "^1.0.3",
@@ -57,9 +57,9 @@
         "build-publish": "yarn build && cd ./build/dist && npm publish --access public",
         "start-bundler": "npx rollup -c rollup.config.js --environment prod --watch",
         "start-ts": "npx tsc -b src/tsconfig.json -w",
-        "bundle-inspect": "yarn build && npx source-map-explorer build/dist/BlocReact.esm.js --no-border-checks --only-mapped",
-        "test": "yarn build-test && node build/dist/BlocReact.test.js",
-        "test-inspect": "yarn build-test && node --inspect-brk build/dist/BlocReact.test.js"
+        "bundle-inspect": "yarn build && npx source-map-explorer build/dist/InteractorReact.esm.js --no-border-checks --only-mapped",
+        "test": "yarn build-test && node build/dist/InteractorReact.test.js",
+        "test-inspect": "yarn build-test && node --inspect-brk build/dist/InteractorReact.test.js"
     },
     "prettier": {
         "endOfLine": "lf",

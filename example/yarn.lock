@@ -14,16 +14,16 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.2.tgz#8f03a22a04de437254e8ce8cc84ba39689288752"
   integrity sha512-HyYEUDeIj5rRQU2Hk5HTB2uHsbRQpF70nvMhVzi+VJR0X+xNEhjPui4/kBf3VeH/wqD28PT4sVOm8qqLjBrSZg==
 
-"@ethossoftworks/bloc-react@./ethossoftworks-bloc-react-1.0.0.tgz":
+"@ethossoftworks/interactor-react@./ethossoftworks-interactor-react-1.0.0.tgz":
   version "1.0.0"
-  resolved "./ethossoftworks-bloc-react-1.0.0.tgz#cd9c68a25657e97532f919ec776cbf1a8028627a"
+  resolved "./ethossoftworks-interactor-react-1.0.0.tgz#cd9c68a25657e97532f919ec776cbf1a8028627a"
   dependencies:
     lodash.isequal "^4.5.0"
     react "^17.0.1"
 
-"@ethossoftworks/bloc@./ethossoftworks-bloc-1.0.0.tgz":
+"@ethossoftworks/interactor@./ethossoftworks-interactor-1.0.0.tgz":
   version "1.0.0"
-  resolved "./ethossoftworks-bloc-1.0.0.tgz#3f3fc912fd95df084ca20032d202cfae23ded2ef"
+  resolved "./ethossoftworks-interactor-1.0.0.tgz#3f3fc912fd95df084ca20032d202cfae23ded2ef"
   dependencies:
     lodash.isequal "^4.5.0"
 
