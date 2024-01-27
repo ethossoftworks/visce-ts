@@ -156,19 +156,19 @@ type TestDependencyState = {
     dependentInt: number
 }
 
-class TestDependencyInteractor extends Interactor<TestDependencyState, [TestInteractor]> {
-    constructor(testInteractor: TestInteractor) {
+class TestDependencyInteractor extends Interactor<TestDependencyState> {
+    constructor(private readonly testInteractor: TestInteractor) {
         super({
             initialState: { count: 0, dependentString: "", dependentInt: 0 },
             dependencies: [testInteractor],
         })
     }
 
-    protected override computed(state: TestDependencyState, [testInteractor]: [TestInteractor]) {
+    protected override computed(state: TestDependencyState) {
         return {
             ...state,
-            dependentString: testInteractor.state.testString,
-            dependentInt: testInteractor.state.testInt,
+            dependentString: this.testInteractor.state.testString,
+            dependentInt: this.testInteractor.state.testInt,
         }
     }
 

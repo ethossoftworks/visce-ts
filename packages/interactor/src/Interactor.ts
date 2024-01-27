@@ -19,11 +19,14 @@ import { distinctUntilChanged, skip } from "rxjs/operators"
  *
  * [initialState] The initial state of a Interactor.
  */
-export abstract class Interactor<T, D extends Interactor<any>[] = []> {
-    private readonly _state: BehaviorSubject<T>
-    private readonly dependencies: D
+export abstract class Interactor<T> {
+    private readonly initialState: T
+    private readonly dependencies: Interactor<any>[]
     private dependencySubscriptions: Subscription[] = []
     private _observers: number = 0
+    private readonly _state: Lazy<BehaviorSubject<T>> = new Lazy(() => {
+        return new BehaviorSubject(this.nextStateWithComputed(this.initialState))
+    })
 
     /**
      * Provides a mechanism to allow launching tasks following structured concurrency.
@@ -31,12 +34,12 @@ export abstract class Interactor<T, D extends Interactor<any>[] = []> {
     public readonly interactorScope = new SupervisorJob()
 
     private readonly _proxy: Observable<T> = new Observable<T>((subscriber) => {
-        if (this.dependencies.length > 0) this._state.next(this.nextStateWithComputed(this._state.value))
+        if (this.dependencies.length > 0) this._state.value.next(this.nextStateWithComputed(this._state.value.value))
         this.handleSubscribe()
         this._observers++
         Logger.log("Adding Interactor dependency", this.constructor.name)
 
-        const subscription = this._state.subscribe({
+        const subscription = this._state.value.subscribe({
             next: (value) => subscriber.next(value),
             complete: () => subscriber.complete(),
             error: (error) => subscriber.error(error),
@@ -50,10 +53,10 @@ export abstract class Interactor<T, D extends Interactor<any>[] = []> {
         }
     }).pipe(distinctUntilChanged(isEqual))
 
-    constructor({ initialState, dependencies }: { initialState: T; dependencies: D }) {
+    constructor({ initialState, dependencies }: { initialState: T; dependencies: Interactor<any>[] }) {
         this.dependencies = dependencies
-        this._state = new BehaviorSubject(this.nextStateWithComputed(initialState))
-        sendDevToolsUpdate(this, "New Interactor", this.state)
+        this.initialState = initialState
+        sendDevToolsUpdate(this, "New Interactor", initialState)
     }
 
     /**
@@ -61,8 +64,8 @@ export abstract class Interactor<T, D extends Interactor<any>[] = []> {
      */
     get state(): T {
         return this.dependencies.length > 0 && this._observers == 0
-            ? this.nextStateWithComputed(this._state.value)
-            : this._state.value
+            ? this.nextStateWithComputed(this._state.value.value)
+            : this._state.value.value
     }
 
     /**
@@ -76,7 +79,7 @@ export abstract class Interactor<T, D extends Interactor<any>[] = []> {
     /**
      * Computes properties based on latest state for every update
      */
-    protected computed?(state: T, dependencies: D): Partial<T> {
+    protected computed?(state: T): Partial<T> {
         return state
     }
 
@@ -85,7 +88,7 @@ export abstract class Interactor<T, D extends Interactor<any>[] = []> {
      */
     protected update(state: Partial<T>): T {
         const newState = { ...this.state, ...state }
-        this._state.next(this.nextStateWithComputed(newState))
+        this._state.value.next(this.nextStateWithComputed(newState))
         sendDevToolsUpdate(this, "Update", this.state)
         return newState
     }
@@ -108,7 +111,7 @@ export abstract class Interactor<T, D extends Interactor<any>[] = []> {
     }
 
     private nextStateWithComputed(state: T): T {
-        return this.computed ? { ...state, ...this.computed(state, this.dependencies) } : state
+        return this.computed ? { ...state, ...this.computed(state) } : state
     }
 }
 
@@ -116,6 +119,21 @@ export abstract class Interactor<T, D extends Interactor<any>[] = []> {
  * Returns the type of the state the Interactor contains
  */
 export type InteractorStateType<B> = B extends Interactor<infer S> ? S : any
+
+class Lazy<T> {
+    private hasInitialized: boolean = false
+    private _value: T | null = null
+
+    constructor(private initializer: () => T) {}
+
+    get value(): T {
+        if (!this.hasInitialized) {
+            this._value = this.initializer()
+            this.hasInitialized = true
+        }
+        return this._value as T
+    }
+}
 
 class Logger {
     readonly LEVEL_DEBUG = 0
@@ -140,7 +158,7 @@ async function connectDevTools() {
     devTools.init(devToolsState)
 }
 
-async function sendDevToolsUpdate(interactor: Interactor<any, any>, action: string, state: any) {
+async function sendDevToolsUpdate(interactor: Interactor<any>, action: string, state: any) {
     if (!devTools || devTools.send === undefined) return
     devToolsState = { ...devToolsState, [interactor.constructor.name]: state }
     devTools.send({ type: `${interactor.constructor.name} - ${action}`, state: state }, devToolsState)
