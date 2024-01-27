@@ -16,7 +16,10 @@ export type UserState = {
 
 export class UserInteractor extends Interactor<UserState> {
     constructor(private userService: UserService) {
-        super({ user: null, isInitialized: false, loginStatus: LoginStatus.IDLE }, true)
+        super({
+            initialState: { user: null, isInitialized: false, loginStatus: LoginStatus.IDLE },
+            dependencies: [],
+        })
     }
 
     static Effects = {
@@ -26,45 +29,36 @@ export class UserInteractor extends Interactor<UserState> {
     }
 
     async initialize() {
-        this.effect({
-            id: UserInteractor.Effects.Initialize,
-            block: async (job) => {
-                const sessionOutcome = await job.pause(this.userService.currentSession())
-                this.update((state) => ({
-                    ...state,
-                    ...(sessionOutcome.isOk() ? { user: sessionOutcome.value } : {}),
-                    isInitialized: true,
-                }))
+        this.interactorScope.launchAndRun(async (job) => {
+            const sessionOutcome = await job.pause(this.userService.currentSession())
+            this.update({
+                ...(sessionOutcome.isOk() ? { user: sessionOutcome.value } : {}),
+                isInitialized: true,
+            })
 
-                return sessionOutcome
-            },
+            return sessionOutcome
         })
     }
 
-    login = (email: string, password: string) =>
-        this.effect({
-            id: UserInteractor.Effects.Login,
-            block: async (job) => {
-                this.update((state) => ({ ...state, loginStatus: LoginStatus.BUSY }))
-                const userOutcome = await job.pause(this.userService.login(email, password))
+    async login(email: string, password: string) {
+        this.interactorScope.launchAndRun(async (job) => {
+            this.update({ ...this.state, loginStatus: LoginStatus.BUSY })
+            const userOutcome = await job.pause(this.userService.login(email, password))
 
-                this.update((state) => ({
-                    ...state,
-                    loginStatus: LoginStatus.IDLE,
-                    user: userOutcome.isOk() ? userOutcome.value : state.user,
-                }))
+            this.update({
+                loginStatus: LoginStatus.IDLE,
+                user: userOutcome.isOk() ? userOutcome.value : this.state.user,
+            })
 
-                return userOutcome
-            },
+            return userOutcome
         })
+    }
 
-    logout = () =>
-        this.effect({
-            id: UserInteractor.Effects.Logout,
-            block: async (job) => {
-                const outcome = await job.pause(this.userService.logout())
-                if (outcome.isOk()) this.update((state) => ({ ...state, user: null }))
-                return outcome
-            },
+    async logout() {
+        this.interactorScope.launchAndRun(async (job) => {
+            const outcome = await job.pause(this.userService.logout())
+            if (outcome.isOk()) this.update({ user: null })
+            return outcome
         })
+    }
 }

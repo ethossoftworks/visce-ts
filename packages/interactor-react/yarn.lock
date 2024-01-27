@@ -36,7 +36,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@ethossoftworks/interactor-react@workspace:."
   dependencies:
-    "@ethossoftworks/interactor": "file:ethossoftworks-interactor-1.0.0.tgz"
     "@ethossoftworks/job": ^1.0.3
     "@ethossoftworks/knock-on-wood": ^2.1.0
     "@ethossoftworks/outcome": ^2.1.1
@@ -52,22 +51,11 @@ __metadata:
     rollup-plugin-terser: ^7.0.2
     rxjs: ^7.5.5
     source-map-explorer: ^2.5.2
-    typescript: ^4.6.2
+    typescript: ^5.3.3
+  peerDependencies:
+    "@ethossoftworks/interactor": "file:ethossoftworks-interactor-1.0.0.tgz"
   languageName: unknown
   linkType: soft
-
-"@ethossoftworks/interactor@file:ethossoftworks-interactor-1.0.0.tgz::locator=%40ethossoftworks%2Finteractor-react%40workspace%3A.":
-  version: 1.0.0
-  resolution: "@ethossoftworks/interactor@file:ethossoftworks-interactor-1.0.0.tgz::locator=%40ethossoftworks%2Finteractor-react%40workspace%3A."
-  dependencies:
-    lodash.isequal: ^4.5.0
-  peerDependencies:
-    "@ethossoftworks/job": ^1.0.3
-    "@ethossoftworks/outcome": ^2.1.1
-    rxjs: ^7.5.5
-  checksum: 529843e462cac098deb9eea3901fdecfb9e24f077ff3045ffa55b52a30d1fa4faffbf14050fddee3741e75185db119c811ebd853a50c0ec1dda7104c75dc741d
-  languageName: node
-  linkType: hard
 
 "@ethossoftworks/job@npm:^1.0.3":
   version: 1.0.3
@@ -1751,23 +1739,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.6.2":
-  version: 4.6.2
-  resolution: "typescript@npm:4.6.2"
+"typescript@npm:^5.3.3":
+  version: 5.3.3
+  resolution: "typescript@npm:5.3.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 8a44ed7e6f6c4cb1ebe8cf236ecda2fb119d84dcf0fbd77e707b2dfea1bbcfc4e366493a143513ce7f57203c75da9d4e20af6fe46de89749366351046be7577c
+  checksum: 2007ccb6e51bbbf6fde0a78099efe04dc1c3dfbdff04ca3b6a8bc717991862b39fd6126c0c3ebf2d2d98ac5e960bcaa873826bb2bb241f14277034148f41f6a2
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.6.2#~builtin<compat/typescript>":
-  version: 4.6.2
-  resolution: "typescript@patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=5d3a66"
+"typescript@patch:typescript@^5.3.3#~builtin<compat/typescript>":
+  version: 5.3.3
+  resolution: "typescript@patch:typescript@npm%3A5.3.3#~builtin<compat/typescript>::version=5.3.3&hash=77c9e2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 40b493a71747fb89fa70df104e2c4a5e284b43750af5bea024090a5261cefa387f7a9372411b13030f7bf5555cee4275443d08805642ae5c74ef76740854a4c7
+  checksum: f61375590b3162599f0f0d5b8737877ac0a7bc52761dbb585d67e7b8753a3a4c42d9a554c4cc929f591ffcf3a2b0602f65ae3ce74714fd5652623a816862b610
   languageName: node
   linkType: hard
 

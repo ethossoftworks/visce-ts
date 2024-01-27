@@ -9,14 +9,15 @@ export type RedirectProps = {
 }
 
 export const Redirect = withRouter(
-    (router) => ({ to, condition, replace = true }: RedirectProps): JSX.Element | null => {
-        useEffect(() => {
-            if (condition !== undefined && condition === false) {
-                return
-            }
-            router.navigate(to, replace)
-        }, [condition])
+    (router) =>
+        ({ to, condition, replace = true }: RedirectProps): JSX.Element | null => {
+            useEffect(() => {
+                if (condition !== undefined && condition === false) {
+                    return
+                }
+                router.navigate(to, replace)
+            }, [condition])
 
-        return null
-    }
+            return null
+        },
 )

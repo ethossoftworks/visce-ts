@@ -1,5 +1,6 @@
 node_modules/
 build/
 *.tgz
+example/.yarn
 packages/interactor/.yarn
 packages/interactor-react/.yarn

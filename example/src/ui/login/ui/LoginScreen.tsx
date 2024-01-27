@@ -14,7 +14,7 @@ import { useInteractorViewModel } from "@ethossoftworks/interactor-react"
 
 export function LoginScreen() {
     const [state, viewModel] = useInteractorViewModel(
-        () => new LoginScreenViewModel(DI.loginInteractor, DI.userInteractor, useRouter())
+        () => new LoginScreenViewModel(DI.loginInteractor, DI.userInteractor, useRouter()),
     )
 
     return (
@@ -60,7 +60,7 @@ class LoginScreenViewModel extends InteractorViewModel<[LoginState, UserState], 
     constructor(
         private loginInteractor: LoginInteractor,
         private userInteractor: UserInteractor,
-        private router: Router
+        private router: Router,
     ) {
         super([loginInteractor, userInteractor])
     }
@@ -80,7 +80,7 @@ class LoginScreenViewModel extends InteractorViewModel<[LoginState, UserState], 
 
         const userOutcome = await this.userInteractor.login(
             this.loginInteractor.state.email,
-            this.loginInteractor.state.password
+            this.loginInteractor.state.password,
         )
         if (userOutcome.isOk()) {
             this.router.navigate(Routes.Home())
