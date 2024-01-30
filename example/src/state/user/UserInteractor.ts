@@ -22,12 +22,6 @@ export class UserInteractor extends Interactor<UserState> {
         })
     }
 
-    static Effects = {
-        Login: "login",
-        Logout: "logout",
-        Initialize: "initialize",
-    }
-
     async initialize() {
         this.interactorScope.launchAndRun(async (job) => {
             const sessionOutcome = await job.pause(this.userService.currentSession())
@@ -42,7 +36,7 @@ export class UserInteractor extends Interactor<UserState> {
 
     async login(email: string, password: string) {
         this.interactorScope.launchAndRun(async (job) => {
-            this.update({ ...this.state, loginStatus: LoginStatus.BUSY })
+            this.update({ loginStatus: LoginStatus.BUSY })
             const userOutcome = await job.pause(this.userService.login(email, password))
 
             this.update({
