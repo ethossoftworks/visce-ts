@@ -1,14 +1,14 @@
 import commonjs from "@rollup/plugin-commonjs"
 import resolve from "@rollup/plugin-node-resolve"
-import { terser } from "rollup-plugin-terser"
-import sourcemaps from "rollup-plugin-sourcemaps"
 import fs from "fs"
 import path from "path"
+import sourcemaps from "rollup-plugin-sourcemaps"
+import { terser } from "rollup-plugin-terser"
 
 /***
  * Configuration
  */
-const projectName = "Bloc"
+const projectName = "VISCE"
 const externals = {
     "@ethossoftworks/job": "Job",
     "@ethossoftworks/outcome": "Outcome",

@@ -4,8 +4,8 @@ const childProcess = require("child_process")
 
 // This script might fail if it's in a folder being synced by DropBox
 const libraries = [
-    { name: "@ethossoftworks/bloc", directory: path.resolve(__dirname, "../../packages/bloc") },
-    { name: "@ethossoftworks/bloc-react", directory: path.resolve(__dirname, "../../packages/bloc-react") },
+    { name: "@ethossoftworks/visce", directory: path.resolve(__dirname, "../../packages/visce") },
+    { name: "@ethossoftworks/visce-react", directory: path.resolve(__dirname, "../../packages/visce-react") },
 ]
 
 const rootDir = path.dirname(__dirname, "../")

@@ -1,11 +1,11 @@
 import React from "react"
 import { DI } from "../DI"
-import { BlocViewModel } from "@ethossoftworks/bloc"
-import { useBlocViewModel } from "@ethossoftworks/bloc-react"
-import { UserBloc, UserState } from "state/user/UserBloc"
+import { UserInteractor } from "state/user/UserInteractor"
+import { useInteractor } from "@ethossoftworks/visce-react"
+import { Interactor } from "@ethossoftworks/visce"
 
 export function Header() {
-    const [state, viewModel] = useBlocViewModel(() => new HeaderViewModel(DI.userBloc))
+    const [state, viewModel] = useInteractor(() => new HeaderViewInteractor(DI.userInteractor()))
 
     return (
         <div className="header">
@@ -20,12 +20,20 @@ type HeaderViewModelState = {
     userName: string
 }
 
-class HeaderViewModel extends BlocViewModel<[UserState], HeaderViewModelState> {
-    constructor(private userBloc: UserBloc) {
-        super([userBloc])
+class HeaderViewInteractor extends Interactor<HeaderViewModelState> {
+    constructor(private userInteractor: UserInteractor) {
+        super({
+            initialState: { userName: "" },
+            dependencies: [userInteractor],
+        })
     }
 
-    transform = ([userState]: [UserState]) => ({ userName: userState.user?.email ?? "" })
+    protected computed(state: HeaderViewModelState): Partial<HeaderViewModelState> {
+        return {
+            ...state,
+            userName: this.userInteractor.state.user?.email ?? "",
+        }
+    }
 
-    logout = () => this.userBloc.logout()
+    logout = () => this.userInteractor.logout()
 }

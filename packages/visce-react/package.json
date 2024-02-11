@@ -1,0 +1,68 @@
+{
+    "name": "@ethossoftworks/visce-react",
+    "version": "0.1.0",
+    "author": {
+        "name": "Ryan Mitchener"
+    },
+    "license": "MIT",
+    "description": "React hooks for @ethossoftworks/visce",
+    "keywords": [],
+    "repository": {
+        "url": "https://github.com/ethossoftworks/visce-ts/tree/master/packages/visce-react"
+    },
+    "main": "VISCEReact.cjs.js",
+    "module": "VISCEReact.esm.js",
+    "types": "types/index.d.ts",
+    "files": [
+        "types/",
+        "*.js",
+        "!*.js.map",
+        "!*.test.d.ts"
+    ],
+    "sideEffects": false,
+    "dependencies": {
+        "@ethossoftworks/visce": "0.1.0",
+        "lodash.isequal": "^4.5.0",
+        "react": "^18.2.0"
+    },
+    "devDependencies": {
+        "@ethossoftworks/job": "^1.0.3",
+        "@ethossoftworks/knock-on-wood": "^2.1.0",
+        "@ethossoftworks/outcome": "^2.1.1",
+        "@rollup/plugin-commonjs": "^21.0.2",
+        "@rollup/plugin-node-resolve": "^13.1.3",
+        "@types/lodash.isequal": "^4.5.5",
+        "@types/react": "^17.0.40",
+        "prettier": "^2.5.1",
+        "rollup": "^2.70.1",
+        "rollup-plugin-sourcemaps": "^0.6.3",
+        "rollup-plugin-terser": "^7.0.2",
+        "rxjs": "^7.5.5",
+        "source-map-explorer": "^2.5.2",
+        "typescript": "^5.3.3"
+    },
+    "scripts": {
+        "format": "yarn prettier --write --loglevel warn src/**/*.ts*",
+        "ts-compile": "yarn tsc -b src/tsconfig.json",
+        "ts-compile-test": "yarn tsc -b src/tsconfig.test.json",
+        "build": "yarn format && yarn ts-compile && yarn rollup -c rollup.config.js --environment prod",
+        "build-test": "yarn format && yarn ts-compile-test && yarn rollup -c rollup.config.js --environment test",
+        "build-pack": "yarn build && cd ./build/dist && npm pack",
+        "build-publish": "yarn build && cd ./build/dist && npm publish --access public",
+        "start-bundler": "yarn rollup -c rollup.config.js --environment prod --watch",
+        "start-ts": "yarn tsc -b src/tsconfig.json -w",
+        "bundle-inspect": "yarn build && yarn source-map-explorer build/dist/VISCEReact.esm.js --no-border-checks --only-mapped",
+        "test": "yarn build-test && node build/dist/VISCEReact.test.js",
+        "test-inspect": "yarn build-test && node --inspect-brk build/dist/VISCEReact.test.js"
+    },
+    "prettier": {
+        "endOfLine": "lf",
+        "tabWidth": 4,
+        "semi": false,
+        "printWidth": 120,
+        "useTabs": false
+    },
+    "peerDependencies": {
+        "@ethossoftworks/visce": "*"
+    }
+}
