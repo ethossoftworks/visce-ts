@@ -6,11 +6,7 @@
     },
     "license": "MIT",
     "description": "React hooks for @ethossoftworks/visce",
-    "keywords": [
-        "state management",
-        "React",
-        "Hooks"
-    ],
+    "keywords": [],
     "repository": {
         "url": "https://github.com/ethossoftworks/visce-ts/tree/master/packages/visce-react"
     },
