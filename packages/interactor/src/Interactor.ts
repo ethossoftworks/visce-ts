@@ -4,20 +4,23 @@ import { BehaviorSubject, Observable, Subscription } from "rxjs"
 import { distinctUntilChanged, skip } from "rxjs/operators"
 
 /**
- * Interactor (Business Logic Component)
+ * [Interactor]
  * An isolated slice of safely mutable, observable state that encapsulates business logic pertaining to state
  * manipulation.
  *
  * Observing State
- * When an observer subscribes to state it will immediately receive the latest state as the first emit. Afterwards,
- * only changes to the state will be emitted to observers.
+ * When an observer subscribes to state via the [stream] method it will immediately receive the latest state as the first
+ * emit. Afterward, only changes to the state will be emitted to observers.
  *
- * Updating Interactor State
- * The only way to update a Interactor's state is by calling the [update] method. Calling [update] will synchronously update
- * the internal state with a new copy of state and notify all observers of the change as long as the new state is
- * different than the previous state.
+ * Updating State
+ * The only way to update an [Interactor]'s state is by calling the [update] method. Calling [update] will synchronously
+ * update the internal state with a new copy of state and notify all observers of the change as long as the new state is
+ * different from the previous state.
  *
- * [initialState] The initial state of a Interactor.
+ * [initialState] The initial state of an Interactor.
+ *
+ * [dependencies] A list of [Interactor]s this [Interactor] is dependent on. When any dependent [Interactor] is updated,
+ * the [computed] function is called and the resulting state is emitted to all subscribers of this [Interactor].
  */
 export abstract class Interactor<T> {
     private readonly initialState: T
