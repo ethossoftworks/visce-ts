@@ -12,10 +12,10 @@
         "Hooks"
     ],
     "repository": {
-        "url": "https://github.com/ethossoftworks/visce-ts/tree/master/packages/interactor-react"
+        "url": "https://github.com/ethossoftworks/visce-ts/tree/master/packages/visce-react"
     },
-    "main": "InteractorReact.cjs.js",
-    "module": "InteractorReact.esm.js",
+    "main": "VISCEReact.cjs.js",
+    "module": "VISCEReact.esm.js",
     "types": "types/index.d.ts",
     "files": [
         "types/",
@@ -54,9 +54,9 @@
         "build-publish": "yarn build && cd ./build/dist && npm publish --access public",
         "start-bundler": "yarn rollup -c rollup.config.js --environment prod --watch",
         "start-ts": "yarn tsc -b src/tsconfig.json -w",
-        "bundle-inspect": "yarn build && yarn source-map-explorer build/dist/InteractorReact.esm.js --no-border-checks --only-mapped",
-        "test": "yarn build-test && node build/dist/InteractorReact.test.js",
-        "test-inspect": "yarn build-test && node --inspect-brk build/dist/InteractorReact.test.js"
+        "bundle-inspect": "yarn build && yarn source-map-explorer build/dist/VISCEReact.esm.js --no-border-checks --only-mapped",
+        "test": "yarn build-test && node build/dist/VISCEReact.test.js",
+        "test-inspect": "yarn build-test && node --inspect-brk build/dist/VISCEReact.test.js"
     },
     "prettier": {
         "endOfLine": "lf",
@@ -66,6 +66,6 @@
         "useTabs": false
     },
     "peerDependencies": {
-        "@ethossoftworks/interactor": "file:ethossoftworks-interactor-1.0.0.tgz"
+        "@ethossoftworks/visce": "file:ethossoftworks-visce-1.0.0.tgz"
     }
 }

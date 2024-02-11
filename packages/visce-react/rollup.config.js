@@ -8,7 +8,7 @@ import { terser } from "rollup-plugin-terser"
 /***
  * Configuration
  */
-const projectName = "InteractorReact"
+const projectName = "VISCEReact"
 const externals = {
     "@ethossoftworks/job": "Job",
     "@ethossoftworks/outcome": "Outcome",
