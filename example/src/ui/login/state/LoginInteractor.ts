@@ -1,4 +1,4 @@
-import { Interactor } from "@ethossoftworks/interactor"
+import { Interactor } from "@ethossoftworks/visce"
 import { arrayOfNotNull } from "lib/util"
 import { UserError, UserService } from "service/user/UserService"
 
@@ -27,35 +27,34 @@ export enum LoginFormValidationError {
 
 export class LoginInteractor extends Interactor<LoginState> {
     constructor(private userService: UserService) {
-        super(newLoginState())
+        super({
+            initialState: newLoginState(),
+            dependencies: [],
+        })
     }
 
     errorChanged = (error: UserError | null) =>
-        this.update((state) => ({
-            ...state,
+        this.update({
             error: error,
-        }))
+        })
 
     emailChanged = (email: string) =>
-        this.update((state) => ({
-            ...state,
+        this.update({
             email: email,
-            validationErrors: this.validateForm(email, state.password),
-        }))
+            validationErrors: this.validateForm(email, this.state.password),
+        })
 
     passwordChanged = (password: string) =>
-        this.update((state) => ({
-            ...state,
+        this.update({
             password: password,
-            validationErrors: this.validateForm(state.email, password),
-        }))
+            validationErrors: this.validateForm(this.state.email, password),
+        })
 
     loginButtonClicked = () =>
-        this.update((state) => ({
-            ...state,
+        this.update({
             shouldShowFormValidation: true,
-            validationErrors: this.validateForm(state.email, state.password),
-        }))
+            validationErrors: this.validateForm(this.state.email, this.state.password),
+        })
 
     private validateForm = (email: string, password: string) =>
         arrayOfNotNull([

@@ -32,31 +32,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethossoftworks/interactor-react@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@ethossoftworks/interactor-react@workspace:."
-  dependencies:
-    "@ethossoftworks/job": ^1.0.3
-    "@ethossoftworks/knock-on-wood": ^2.1.0
-    "@ethossoftworks/outcome": ^2.1.1
-    "@rollup/plugin-commonjs": ^21.0.2
-    "@rollup/plugin-node-resolve": ^13.1.3
-    "@types/lodash.isequal": ^4.5.5
-    "@types/react": ^17.0.40
-    lodash.isequal: ^4.5.0
-    prettier: ^2.5.1
-    react: ^17.0.2
-    rollup: ^2.70.1
-    rollup-plugin-sourcemaps: ^0.6.3
-    rollup-plugin-terser: ^7.0.2
-    rxjs: ^7.5.5
-    source-map-explorer: ^2.5.2
-    typescript: ^5.3.3
-  peerDependencies:
-    "@ethossoftworks/interactor": "file:ethossoftworks-interactor-1.0.0.tgz"
-  languageName: unknown
-  linkType: soft
-
 "@ethossoftworks/job@npm:^1.0.3":
   version: 1.0.3
   resolution: "@ethossoftworks/job@npm:1.0.3"
@@ -77,6 +52,45 @@ __metadata:
   version: 2.1.1
   resolution: "@ethossoftworks/outcome@npm:2.1.1"
   checksum: 0dcaa1d75a3e4ea2138df771fabb5ea1e50026a6b32d10bc75cdf4aa8a15473a9c94b4e005efc152eadb62fcc41eced0912841c1e4be3a5e91c60d4f1898b4b5
+  languageName: node
+  linkType: hard
+
+"@ethossoftworks/visce-react@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@ethossoftworks/visce-react@workspace:."
+  dependencies:
+    "@ethossoftworks/job": ^1.0.3
+    "@ethossoftworks/knock-on-wood": ^2.1.0
+    "@ethossoftworks/outcome": ^2.1.1
+    "@ethossoftworks/visce": 0.1.0
+    "@rollup/plugin-commonjs": ^21.0.2
+    "@rollup/plugin-node-resolve": ^13.1.3
+    "@types/lodash.isequal": ^4.5.5
+    "@types/react": ^17.0.40
+    lodash.isequal: ^4.5.0
+    prettier: ^2.5.1
+    react: ^18.2.0
+    rollup: ^2.70.1
+    rollup-plugin-sourcemaps: ^0.6.3
+    rollup-plugin-terser: ^7.0.2
+    rxjs: ^7.5.5
+    source-map-explorer: ^2.5.2
+    typescript: ^5.3.3
+  peerDependencies:
+    "@ethossoftworks/visce": "*"
+  languageName: unknown
+  linkType: soft
+
+"@ethossoftworks/visce@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@ethossoftworks/visce@npm:0.1.0"
+  dependencies:
+    lodash.isequal: ^4.5.0
+  peerDependencies:
+    "@ethossoftworks/job": ^1.0.3
+    "@ethossoftworks/outcome": ^2.1.1
+    rxjs: ^7.5.5
+  checksum: 4b1179677f1d59f509aa2b2d185ffea3e69e7b60d60293df5b5c76d23f8a2b44959db6b861cea74736d30e86741c50a6cf76ca6cc00b7beac06398a44db39c8d
   languageName: node
   linkType: hard
 
@@ -1247,13 +1261,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object-assign@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "object-assign@npm:4.1.1"
-  checksum: fcc6e4ea8c7fe48abfbb552578b1c53e0d194086e2e6bbbf59e0a536381a292f39943c6e9628af05b5528aa5e3318bb30d6b2e53cadaf5b8fe9e12c4b69af23f
-  languageName: node
-  linkType: hard
-
 "once@npm:^1.3.0":
   version: 1.4.0
   resolution: "once@npm:1.4.0"
@@ -1355,13 +1362,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^17.0.2":
-  version: 17.0.2
-  resolution: "react@npm:17.0.2"
+"react@npm:^18.2.0":
+  version: 18.2.0
+  resolution: "react@npm:18.2.0"
   dependencies:
     loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-  checksum: b254cc17ce3011788330f7bbf383ab653c6848902d7936a87b09d835d091e3f295f7e9dd1597c6daac5dc80f90e778c8230218ba8ad599f74adcc11e33b9d61b
+  checksum: 88e38092da8839b830cda6feef2e8505dec8ace60579e46aa5490fc3dc9bba0bd50336507dc166f43e3afc1c42939c09fe33b25fae889d6f402721dcd78fca1b
   languageName: node
   linkType: hard
 

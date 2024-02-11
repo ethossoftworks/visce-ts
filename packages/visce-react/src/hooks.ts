@@ -1,4 +1,4 @@
-import { Interactor, InteractorStateType } from "@ethossoftworks/interactor"
+import { Interactor, InteractorStateType } from "@ethossoftworks/visce"
 import { DependencyList, useLayoutEffect, useMemo, useState } from "react"
 import { skip } from "rxjs/operators"
 

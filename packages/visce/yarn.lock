@@ -32,32 +32,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethossoftworks/interactor@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@ethossoftworks/interactor@workspace:."
-  dependencies:
-    "@ethossoftworks/job": ^1.0.3
-    "@ethossoftworks/knock-on-wood": ^2.0.1
-    "@ethossoftworks/outcome": ^2.1.1
-    "@rollup/plugin-commonjs": ^21.0.2
-    "@rollup/plugin-node-resolve": ^13.1.3
-    "@types/lodash.isequal": ^4.5.5
-    "@types/react": ^17.0.40
-    lodash.isequal: ^4.5.0
-    prettier: ^2.5.1
-    rollup: ^2.70.1
-    rollup-plugin-sourcemaps: ^0.6.3
-    rollup-plugin-terser: ^7.0.2
-    rxjs: ^7.5.5
-    source-map-explorer: ^2.5.2
-    typescript: ^5.3.3
-  peerDependencies:
-    "@ethossoftworks/job": ^1.0.3
-    "@ethossoftworks/outcome": ^2.1.1
-    rxjs: ^7.5.5
-  languageName: unknown
-  linkType: soft
-
 "@ethossoftworks/job@npm:^1.0.3":
   version: 1.0.3
   resolution: "@ethossoftworks/job@npm:1.0.3"
@@ -80,6 +54,32 @@ __metadata:
   checksum: 0dcaa1d75a3e4ea2138df771fabb5ea1e50026a6b32d10bc75cdf4aa8a15473a9c94b4e005efc152eadb62fcc41eced0912841c1e4be3a5e91c60d4f1898b4b5
   languageName: node
   linkType: hard
+
+"@ethossoftworks/visce@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@ethossoftworks/visce@workspace:."
+  dependencies:
+    "@ethossoftworks/job": ^1.0.3
+    "@ethossoftworks/knock-on-wood": ^2.0.1
+    "@ethossoftworks/outcome": ^2.1.1
+    "@rollup/plugin-commonjs": ^21.0.2
+    "@rollup/plugin-node-resolve": ^13.1.3
+    "@types/lodash.isequal": ^4.5.5
+    "@types/react": ^17.0.40
+    lodash.isequal: ^4.5.0
+    prettier: ^2.5.1
+    rollup: ^2.70.1
+    rollup-plugin-sourcemaps: ^0.6.3
+    rollup-plugin-terser: ^7.0.2
+    rxjs: ^7.8.1
+    source-map-explorer: ^2.5.2
+    typescript: ^5.3.3
+  peerDependencies:
+    "@ethossoftworks/job": ^1.0.3
+    "@ethossoftworks/outcome": ^2.1.1
+    rxjs: ^7.5.5
+  languageName: unknown
+  linkType: soft
 
 "@isaacs/cliui@npm:^8.0.2":
   version: 8.0.2
@@ -1427,12 +1427,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.5.5":
-  version: 7.5.5
-  resolution: "rxjs@npm:7.5.5"
+"rxjs@npm:^7.8.1":
+  version: 7.8.1
+  resolution: "rxjs@npm:7.8.1"
   dependencies:
     tslib: ^2.1.0
-  checksum: e034f60805210cce756dd2f49664a8108780b117cf5d0e2281506e9e6387f7b4f1532d974a8c8b09314fa7a16dd2f6cff3462072a5789672b5dcb45c4173f3c6
+  checksum: de4b53db1063e618ec2eca0f7965d9137cabe98cf6be9272efe6c86b47c17b987383df8574861bcced18ebd590764125a901d5506082be84a8b8e364bf05f119
   languageName: node
   linkType: hard
 

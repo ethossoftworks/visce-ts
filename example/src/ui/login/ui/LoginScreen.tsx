@@ -9,12 +9,12 @@ import { Router } from "lib/router"
 import { Modal } from "ui/common/Modal"
 import { UserError } from "service/user/UserService"
 import { Loader } from "ui/common/Loader"
-import { InteractorViewModel } from "@ethossoftworks/interactor"
-import { useInteractorViewModel } from "@ethossoftworks/interactor-react"
+import { Interactor } from "@ethossoftworks/visce"
+import { useInteractor } from "@ethossoftworks/visce-react"
 
 export function LoginScreen() {
-    const [state, viewModel] = useInteractorViewModel(
-        () => new LoginScreenViewModel(DI.loginInteractor, DI.userInteractor, useRouter()),
+    const [state, interactor] = useInteractor(
+        () => new LoginScreenViewInteractor(DI.loginInteractor(), DI.userInteractor(), useRouter())
     )
 
     return (
@@ -27,9 +27,9 @@ export function LoginScreen() {
                     !state.shouldShowFormValidation ||
                     !state.validationErrors.includes(LoginFormValidationError.Password)
                 }
-                onEmailChanged={viewModel.onEmailChanged}
-                onPasswordChanged={viewModel.onPasswordChanged}
-                onSubmit={viewModel.onSubmit}
+                onEmailChanged={interactor.onEmailChanged}
+                onPasswordChanged={interactor.onPasswordChanged}
+                onSubmit={interactor.onSubmit}
             />
             <Loader isVisible={state.isLoading} />
             <Modal
@@ -39,7 +39,7 @@ export function LoginScreen() {
                 buttons={[
                     {
                         label: "Ok",
-                        onClick: () => viewModel.onErrorDismissed(),
+                        onClick: () => interactor.onErrorDismissed(),
                     },
                 ]}
             />
@@ -56,19 +56,32 @@ type LoginViewModelState = {
     isLoading: boolean
 }
 
-class LoginScreenViewModel extends InteractorViewModel<[LoginState, UserState], LoginViewModelState> {
+class LoginScreenViewInteractor extends Interactor<LoginViewModelState> {
     constructor(
         private loginInteractor: LoginInteractor,
         private userInteractor: UserInteractor,
-        private router: Router,
+        private router: Router
     ) {
-        super([loginInteractor, userInteractor])
+        super({
+            initialState: {
+                email: "",
+                password: "",
+                shouldShowFormValidation: false,
+                validationErrors: [],
+                error: null,
+                isLoading: false,
+            },
+            dependencies: [loginInteractor, userInteractor],
+        })
     }
 
-    transform: (state: [LoginState, UserState]) => LoginViewModelState = ([loginState, userState]) => ({
-        ...loginState,
-        isLoading: userState.loginStatus == LoginStatus.BUSY,
-    })
+    protected computed(state: LoginViewModelState): Partial<LoginViewModelState> {
+        return {
+            ...state,
+            ...this.loginInteractor.state,
+            isLoading: this.userInteractor.state.loginStatus == LoginStatus.BUSY,
+        }
+    }
 
     onEmailChanged = (value: string) => this.loginInteractor.emailChanged(value)
 
@@ -80,7 +93,7 @@ class LoginScreenViewModel extends InteractorViewModel<[LoginState, UserState], 
 
         const userOutcome = await this.userInteractor.login(
             this.loginInteractor.state.email,
-            this.loginInteractor.state.password,
+            this.loginInteractor.state.password
         )
         if (userOutcome.isOk()) {
             this.router.navigate(Routes.Home())

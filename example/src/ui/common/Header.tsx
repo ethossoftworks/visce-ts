@@ -1,11 +1,11 @@
 import React from "react"
 import { DI } from "../DI"
-import { InteractorViewModel } from "@ethossoftworks/interactor"
-import { useInteractorViewModel } from "@ethossoftworks/interactor-react"
-import { UserInteractor, UserState } from "state/user/UserInteractor"
+import { UserInteractor } from "state/user/UserInteractor"
+import { useInteractor } from "@ethossoftworks/visce-react"
+import { Interactor } from "@ethossoftworks/visce"
 
 export function Header() {
-    const [state, viewModel] = useInteractorViewModel(() => new HeaderViewModel(DI.userInteractor))
+    const [state, viewModel] = useInteractor(() => new HeaderViewInteractor(DI.userInteractor()))
 
     return (
         <div className="header">
@@ -20,12 +20,20 @@ type HeaderViewModelState = {
     userName: string
 }
 
-class HeaderViewModel extends InteractorViewModel<[UserState], HeaderViewModelState> {
+class HeaderViewInteractor extends Interactor<HeaderViewModelState> {
     constructor(private userInteractor: UserInteractor) {
-        super([userInteractor])
+        super({
+            initialState: { userName: "" },
+            dependencies: [userInteractor],
+        })
     }
 
-    transform = ([userState]: [UserState]) => ({ userName: userState.user?.email ?? "" })
+    protected computed(state: HeaderViewModelState): Partial<HeaderViewModelState> {
+        return {
+            ...state,
+            userName: this.userInteractor.state.user?.email ?? "",
+        }
+    }
 
     logout = () => this.userInteractor.logout()
 }

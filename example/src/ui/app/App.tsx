@@ -7,7 +7,7 @@ import { HomeScreen } from "ui/home/HomeScreen"
 import { LoginScreen } from "ui/login/ui/LoginScreen"
 import { AuthRoute } from "ui/common/AuthRoute"
 import { DI } from "../DI"
-import { useInteractor } from "@ethossoftworks/interactor-react"
+import { useInteractor } from "@ethossoftworks/visce-react"
 
 export function App() {
     const route = useRoute()

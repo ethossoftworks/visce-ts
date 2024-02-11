@@ -1,4 +1,4 @@
-import { Interactor } from "@ethossoftworks/interactor"
+import { Interactor } from "@ethossoftworks/visce"
 import { User } from "model/user/User"
 import { UserService } from "service/user/UserService"
 
@@ -35,7 +35,7 @@ export class UserInteractor extends Interactor<UserState> {
     }
 
     async login(email: string, password: string) {
-        this.interactorScope.launchAndRun(async (job) => {
+        return this.interactorScope.launchAndRun(async (job) => {
             this.update({ loginStatus: LoginStatus.BUSY })
             const userOutcome = await job.pause(this.userService.login(email, password))
 

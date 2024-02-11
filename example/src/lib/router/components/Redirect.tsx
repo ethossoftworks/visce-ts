@@ -19,5 +19,5 @@ export const Redirect = withRouter(
             }, [condition])
 
             return null
-        },
+        }
 )

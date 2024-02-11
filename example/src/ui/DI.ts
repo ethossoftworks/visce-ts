@@ -6,6 +6,11 @@ import { LoginInteractor } from "ui/login/state/LoginInteractor"
 export class DI {
     static userService: UserService = new DefaultUserService()
 
-    static loginInteractor: LoginInteractor = new LoginInteractor(DI.userService)
-    static userInteractor: UserInteractor = new UserInteractor(DI.userService)
+    static loginInteractor() {
+        return new LoginInteractor(DI.userService)
+    }
+
+    static userInteractor() {
+        return new UserInteractor(DI.userService)
+    }
 }
