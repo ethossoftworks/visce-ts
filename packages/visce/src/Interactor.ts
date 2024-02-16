@@ -3,6 +3,11 @@ import isEqual from "lodash.isequal"
 import { BehaviorSubject, Observable, Subscription } from "rxjs"
 import { distinctUntilChanged, skip } from "rxjs/operators"
 
+export interface IInteractor<T> {
+    state: T
+    stream: Observable<T>
+}
+
 /**
  * [Interactor]
  * An isolated slice of safely mutable, observable state that encapsulates business logic pertaining to state
@@ -22,9 +27,9 @@ import { distinctUntilChanged, skip } from "rxjs/operators"
  * [dependencies] A list of [Interactor]s this [Interactor] is dependent on. When any dependent [Interactor] is updated,
  * the [computed] function is called and the resulting state is emitted to all subscribers of this [Interactor].
  */
-export abstract class Interactor<T> {
+export abstract class Interactor<T> implements IInteractor<T> {
     private readonly initialState: T
-    private readonly dependencies: Interactor<any>[]
+    private readonly dependencies: IInteractor<any>[]
     private dependencySubscriptions: Subscription[] = []
     private _observers: number = 0
     private readonly _state: Lazy<BehaviorSubject<T>> = new Lazy(() => {
@@ -34,7 +39,7 @@ export abstract class Interactor<T> {
     /**
      * Provides a mechanism to allow launching tasks following structured concurrency.
      */
-    public readonly interactorScope = new SupervisorJob()
+    protected readonly interactorScope = new SupervisorJob()
 
     private readonly _proxy: Observable<T> = new Observable<T>((subscriber) => {
         if (this.dependencies.length > 0) this._state.value.next(this.nextStateWithComputed(this._state.value.value))
@@ -56,7 +61,7 @@ export abstract class Interactor<T> {
         }
     }).pipe(distinctUntilChanged(isEqual))
 
-    constructor({ initialState, dependencies }: { initialState: T; dependencies: Interactor<any>[] }) {
+    constructor({ initialState, dependencies }: { initialState: T; dependencies: IInteractor<any>[] }) {
         this.dependencies = dependencies
         this.initialState = initialState
         sendDevToolsUpdate(this, "New Interactor", initialState)
@@ -115,6 +120,63 @@ export abstract class Interactor<T> {
 
     private nextStateWithComputed(state: T): T {
         return this.computed ? { ...state, ...this.computed(state) } : state
+    }
+}
+
+/**
+ * Create a functional [Interactor] without having to extend the Interactor class. It is recommended to extend the
+ * [Interactor] class directly, but sometimes that may not be possible. [createInteractor] provides an alternative
+ * means of creating an [Interactor].
+ *
+ * Example:
+ * ```
+ * const interactor = createInteractor({
+ *     initialState: newTestState(),
+ *     dependencies: [],
+ *     computed: (state) => ({ ...state, testInt: state.testString.length }),
+ *     hooks: (update, interactor) => ({
+ *         test() {
+ *             update({ testString: "Test Succeeded" })
+ *         },
+ *     }),
+ * })
+ * ```
+ */
+export function createInteractor<T, H>({
+    initialState,
+    dependencies,
+    computed,
+    hooks,
+}: {
+    initialState: T
+    dependencies: IInteractor<any>[]
+    computed: (state: T) => T
+    hooks: (hookFactory: (state: Partial<T>) => T, interactor: IInteractor<T>) => H
+}): H & IInteractor<T> {
+    const interactor = new (class extends Interactor<T> {
+        public resolvedHooks: H
+
+        constructor() {
+            super({
+                initialState: initialState,
+                dependencies: dependencies,
+            })
+            this.resolvedHooks = hooks(this.update.bind(this), this)
+        }
+
+        protected override computed(state: T): Partial<T> {
+            return computed(state)
+        }
+    })()
+
+    return {
+        ...interactor.resolvedHooks,
+        get state(): T {
+            return interactor.state
+        },
+        get stream(): Observable<T> {
+            return interactor.stream
+        },
     }
 }
 

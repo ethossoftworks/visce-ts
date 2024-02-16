@@ -1,6 +1,6 @@
 import { expect, test } from "@ethossoftworks/knock-on-wood"
 import { firstValueFrom, skip } from "rxjs"
-import { Interactor } from "./Interactor"
+import { Interactor, createInteractor } from "./Interactor"
 
 export function interactorTests() {
     test("Get current state on subscribe", async () => {
@@ -117,6 +117,34 @@ export function interactorTests() {
         testInteractor.setString("distinctTest2")
         sub.unsubscribe()
         expect(updateCount, 2, "Dependency emitted update with equal value")
+    })
+
+    test("Functional Interactor", async () => {
+        const interactor = createInteractor({
+            initialState: newTestState(),
+            dependencies: [],
+            computed: (state) => ({ ...state, testInt: state.testString.length }),
+            hooks: (update, interactor) => ({
+                test() {
+                    update({ testString: "Test Succeeded" })
+                },
+                test2(value: string) {
+                    update({ testString: value })
+                },
+            }),
+        })
+
+        expect(interactor.state.testString, "Test", "Invalid initial value")
+        expect(interactor.state.testInt, "Test".length, "Invalid computed")
+        interactor.test()
+        expect(interactor.state.testString, "Test Succeeded", "Update didn't work")
+        expect(interactor.state.testInt, "Test Succeeded".length, "Computed after update didn't work")
+        let streamCount = 0
+        interactor.stream.subscribe((value) => streamCount++)
+        interactor.test2("one")
+        interactor.test2("two")
+        interactor.test2("three")
+        expect(streamCount, 4, `Stream doesn't work. Stream Count: ${streamCount}`)
     })
 }
 
