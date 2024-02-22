@@ -1,20 +1,17 @@
 {
-    "name": "@ethossoftworks/bloc",
-    "version": "1.0.0",
+    "name": "@ethossoftworks/visce",
+    "version": "0.2.1",
     "author": {
         "name": "Ryan Mitchener"
     },
     "license": "MIT",
-    "description": "A simple, modular state management library",
-    "keywords": [
-        "state management",
-        "streams"
-    ],
+    "description": "A TypeScript implementation of the VISCE architecture",
+    "keywords": [],
     "repository": {
-        "url": "https://github.com/ethossoftworks/bloc-ts/tree/master/packages/bloc"
+        "url": "https://github.com/ethossoftworks/visce-ts/tree/master/packages/visce"
     },
-    "main": "Bloc.cjs.js",
-    "module": "Bloc.esm.js",
+    "main": "VSICE.cjs.js",
+    "module": "VISCE.esm.js",
     "types": "types/index.d.ts",
     "files": [
         "types/",
@@ -43,23 +40,23 @@
         "rollup": "^2.70.1",
         "rollup-plugin-sourcemaps": "^0.6.3",
         "rollup-plugin-terser": "^7.0.2",
-        "rxjs": "^7.5.5",
+        "rxjs": "^7.8.1",
         "source-map-explorer": "^2.5.2",
-        "typescript": "^4.6.2"
+        "typescript": "^5.3.3"
     },
     "scripts": {
-        "format": "npx prettier --write --loglevel warn src/**/*.ts*",
-        "ts-compile": "npx tsc -b src/tsconfig.json",
-        "ts-compile-test": "npx tsc -b src/tsconfig.test.json",
-        "build": "yarn format && yarn ts-compile && npx rollup -c rollup.config.js --environment prod",
-        "build-test": "yarn format && yarn ts-compile-test && npx rollup -c rollup.config.js --environment test",
+        "format": "yarn prettier --write --loglevel warn src/**/*.ts*",
+        "ts-compile": "yarn tsc -b src/tsconfig.json",
+        "ts-compile-test": "yarn tsc -b src/tsconfig.test.json",
+        "build": "yarn format && yarn ts-compile && yarn rollup -c rollup.config.js --environment prod",
+        "build-test": "yarn format && yarn ts-compile-test && yarn rollup -c rollup.config.js --environment test",
         "build-pack": "yarn build && cd ./build/dist && npm pack",
         "build-publish": "yarn build && cd ./build/dist && npm publish --access public",
-        "start-bundler": "npx rollup -c rollup.config.js --environment prod --watch",
-        "start-ts": "npx tsc -b src/tsconfig.json -w",
-        "bundle-inspect": "yarn build && npx source-map-explorer build/dist/Bloc.esm.js --no-border-checks --only-mapped",
-        "test": "yarn build-test && node build/dist/Bloc.test.js",
-        "test-inspect": "yarn build-test && node --inspect-brk build/dist/Bloc.test.js"
+        "start-bundler": "yarn rollup -c rollup.config.js --environment prod --watch",
+        "start-ts": "yarn tsc -b src/tsconfig.json -w",
+        "bundle-inspect": "yarn build && yarn source-map-explorer build/dist/VISCE.esm.js --no-border-checks --only-mapped",
+        "test": "yarn build-test && node build/dist/VISCE.test.js",
+        "test-inspect": "yarn build-test && node --inspect-brk build/dist/VISCE.test.js"
     },
     "prettier": {
         "endOfLine": "lf",

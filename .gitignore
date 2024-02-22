@@ -1,3 +1,6 @@
 node_modules/
 build/
 *.tgz
+example/.yarn
+packages/visce/.yarn
+packages/visce-react/.yarn
