@@ -1,32 +1,3 @@
-# Documentation
-- [API](docs/api.md)
-- [Example Project](example/)
-- [Release Notes](docs/release-notes.md)
+# VISCE
 
-# Build
-`yarn build` or `yarn build-dev`
-<br/><br/>
-
-# Develop
-1. Open two terminals
-2. Run `yarn start-ts` in the first
-3. Run `yarn start-bundler` in the second
-<br/><br/>
-
-# Test
-`yarn build-test` or `yarn test`
-<br/><br/>
-
-# Things to Update
-
-### rollup.config.js
-* Change `projectName` variable
-* Update `externals`
-
-### package.json
-* General information
-* main property
-* module property
-* `test` script file name
-* `test-inspect` script file name
-* `bundle-inspect` script file name
+A TypeScript implementation of the [VISCE architecture](https://ryanmitchener.notion.site/VISCE-va-s-Architecture-d0878313b4154d2999bf3bf36cb072ff)
