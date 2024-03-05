@@ -183,7 +183,7 @@ export function createInteractor<T, H>({
 /**
  * Returns the type of the state the Interactor contains
  */
-export type InteractorStateType<B> = B extends Interactor<infer S> ? S : any
+export type InteractorStateType<B> = B extends IInteractor<infer S> ? S : unknown
 
 class Lazy<T> {
     private hasInitialized: boolean = false

@@ -1,1 +1,1 @@
-export { IInteractor, Interactor, InteractorStateType } from "./Interactor"
+export { IInteractor, Interactor, InteractorStateType, createInteractor } from "./Interactor"
