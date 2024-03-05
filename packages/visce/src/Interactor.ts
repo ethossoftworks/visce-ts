@@ -150,7 +150,7 @@ export function createInteractor<T, H>({
 }: {
     initialState: T
     dependencies: IInteractor<any>[]
-    computed: (state: T) => T
+    computed: (state: T) => Partial<T>
     hooks: (hookFactory: (state: Partial<T>) => T, interactor: IInteractor<T>) => H
 }): H & IInteractor<T> {
     const interactor = new (class extends Interactor<T> {

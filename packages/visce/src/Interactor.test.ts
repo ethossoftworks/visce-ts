@@ -123,7 +123,7 @@ export function interactorTests() {
         const interactor = createInteractor({
             initialState: newTestState(),
             dependencies: [],
-            computed: (state) => ({ ...state, testInt: state.testString.length }),
+            computed: (state) => ({ testInt: state.testString.length }),
             hooks: (update, interactor) => ({
                 test() {
                     update({ testString: "Test Succeeded" })
