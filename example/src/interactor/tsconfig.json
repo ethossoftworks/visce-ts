@@ -12,6 +12,6 @@
         }
     ],
     "compilerOptions": {
-        "outDir": "../../build/generated/state",
+        "outDir": "../../build/generated/interactor",
     }
 }

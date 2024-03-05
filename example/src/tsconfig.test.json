@@ -11,7 +11,7 @@
             "path": "./service"
         },
         {
-            "path": "./state"
+            "path": "./interactor"
         },
         {
             "path": "./ui"

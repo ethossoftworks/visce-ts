@@ -24,8 +24,8 @@
             "service/*": [
                 "src/service/*"
             ],
-            "state/*": [
-                "src/state/*"
+            "interactor/*": [
+                "src/interactor/*"
             ],
             "ui/*": [
                 "src/ui/*"

@@ -70,6 +70,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ethossoftworks/visce@npm:0.2.1":
+  version: 0.2.1
+  resolution: "@ethossoftworks/visce@npm:0.2.1"
+  dependencies:
+    lodash.isequal: ^4.5.0
+  peerDependencies:
+    "@ethossoftworks/job": ^1.0.3
+    "@ethossoftworks/outcome": ^2.1.1
+    rxjs: ^7.5.5
+  checksum: e7355790c9e7b3af461cbc7828aa886d27662a6a5c57930299c99f2bf49909ff1e3ef2e392d478a6012494c7272bffef4ba40718a422f535bbd2959f6edc3c76
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.0.1":
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
@@ -748,7 +761,7 @@ __metadata:
     "@ethossoftworks/job": ^1.0.3
     "@ethossoftworks/knock-on-wood": ^2.0.1
     "@ethossoftworks/outcome": ^2.1.1
-    "@ethossoftworks/visce": 0.1.0
+    "@ethossoftworks/visce": 0.2.1
     "@ethossoftworks/visce-react": 0.1.0
     "@types/lodash.isequal": ^4.5.5
     "@types/react": ^17.0.0

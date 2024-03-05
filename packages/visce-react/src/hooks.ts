@@ -7,7 +7,7 @@ import { skip } from "rxjs/operators"
  */
 export function useInteractor<T extends () => Interactor<any>>(
     factory: T,
-    dependencies: DependencyList = []
+    dependencies: DependencyList
 ): [InteractorStateType<ReturnType<T>>, ReturnType<T>] {
     const [_, setState] = useState<object>({})
     const interactor = useMemo(factory, dependencies) as ReturnType<T>
@@ -15,7 +15,7 @@ export function useInteractor<T extends () => Interactor<any>>(
     useLayoutEffect(() => {
         const subscription = interactor.stream.pipe(skip(1)).subscribe({ next: () => setState({}) })
         return () => subscription.unsubscribe()
-    }, [])
+    }, dependencies)
 
     return [interactor.state, interactor]
 }

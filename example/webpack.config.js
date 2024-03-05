@@ -26,7 +26,7 @@ const prodConfig = {
             lib: path.resolve(__dirname, "build/generated/lib"),
             model: path.resolve(__dirname, "build/generated/model"),
             service: path.resolve(__dirname, "build/generated/service"),
-            state: path.resolve(__dirname, "build/generated/state"),
+            interactor: path.resolve(__dirname, "build/generated/interactor"),
             ui: path.resolve(__dirname, "build/generated/ui"),
             static: path.resolve(__dirname, "static"),
         },

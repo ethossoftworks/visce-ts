@@ -1,6 +1,6 @@
 import React from "react"
 import { DI } from "../DI"
-import { UserInteractor } from "state/user/UserInteractor"
+import { UserInteractor } from "interactor/user/UserInteractor"
 import { useInteractor } from "@ethossoftworks/visce-react"
 import { Interactor } from "@ethossoftworks/visce"
 
