@@ -1,6 +1,6 @@
 {
     "name": "@ethossoftworks/visce-react",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "author": {
         "name": "Ryan Mitchener"
     },
@@ -21,7 +21,7 @@
     ],
     "sideEffects": false,
     "dependencies": {
-        "@ethossoftworks/visce": "0.1.0",
+        "@ethossoftworks/visce": "0.2.3",
         "lodash.isequal": "^4.5.0",
         "react": "^18.2.0"
     },

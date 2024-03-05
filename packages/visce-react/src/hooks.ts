@@ -1,11 +1,11 @@
-import { Interactor, InteractorStateType } from "@ethossoftworks/visce"
+import { IInteractor, InteractorStateType } from "@ethossoftworks/visce"
 import { DependencyList, useLayoutEffect, useMemo, useState } from "react"
 import { skip } from "rxjs/operators"
 
 /**
  * Subscribes to a Interactor and returns its state. The view will be updated when the interactor is updated.
  */
-export function useInteractor<T extends () => Interactor<any>>(
+export function useInteractor<T extends () => IInteractor<any>>(
     factory: T,
     dependencies: DependencyList
 ): [InteractorStateType<ReturnType<T>>, ReturnType<T>] {
