@@ -149,8 +149,8 @@ export function createInteractor<T, H>({
     hooks,
 }: {
     initialState: T
-    dependencies: IInteractor<any>[]
-    computed: (state: T) => Partial<T>
+    dependencies?: IInteractor<any>[]
+    computed?: (state: T) => Partial<T>
     hooks: (hookFactory: (state: Partial<T>) => T, interactor: IInteractor<T>) => H
 }): H & IInteractor<T> {
     const interactor = new (class extends Interactor<T> {
@@ -159,13 +159,13 @@ export function createInteractor<T, H>({
         constructor() {
             super({
                 initialState: initialState,
-                dependencies: dependencies,
+                dependencies: dependencies ?? [],
             })
             this.resolvedHooks = hooks(this.update.bind(this), this)
         }
 
         protected override computed(state: T): Partial<T> {
-            return computed(state)
+            return computed !== undefined ? computed(state) : state
         }
     })()
 
